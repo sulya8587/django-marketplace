@@ -1,0 +1,392 @@
+[
+  {
+    "model": "board.category",
+    "pk": 900,
+    "fields": {
+      "name": "Market (Marketplace)",
+      "slug": "market",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 901,
+    "fields": {
+      "name": "Electronics",
+      "slug": "electronics",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 902,
+    "fields": {
+      "name": "Fashion",
+      "slug": "fashion",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 903,
+    "fields": {
+      "name": "Home & Garden",
+      "slug": "home-and-garden",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 904,
+    "fields": {
+      "name": "Beauty & Personal Care",
+      "slug": "beauty-and-personal-care",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 905,
+    "fields": {
+      "name": "Books, Movies & Music",
+      "slug": "books-movies-and-music",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 906,
+    "fields": {
+      "name": "Sports & Outdoors",
+      "slug": "sports-and-outdoors",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 907,
+    "fields": {
+      "name": "Toys & Games",
+      "slug": "toys-and-games",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 908,
+    "fields": {
+      "name": "Arts & Crafts",
+      "slug": "arts-and-crafts",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 909,
+    "fields": {
+      "name": "Antiques & Collectibles",
+      "slug": "antiques-and-collectibles",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 910,
+    "fields": {
+      "name": "Pet Supplies",
+      "slug": "pet-supplies",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 911,
+    "fields": {
+      "name": "Office Supplies",
+      "slug": "office-supplies",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 912,
+    "fields": {
+      "name": "Health & Wellness",
+      "slug": "health-and-wellness",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 913,
+    "fields": {
+      "name": "Food & Beverages",
+      "slug": "food-and-beverages",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 914,
+    "fields": {
+      "name": "Musical Instruments",
+      "slug": "musical-instruments",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 915,
+    "fields": {
+      "name": "Jewelry & Watches",
+      "slug": "jewelry-and-watches",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 916,
+    "fields": {
+      "name": "Luggage & Bags",
+      "slug": "luggage-and-bags",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 917,
+    "fields": {
+      "name": "Baby & Kids",
+      "slug": "baby-and-kids",
+      "parent": 900,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1000,
+    "fields": {
+      "name": "Vehicles & Transportation",
+      "slug": "vehicles-and-transportation",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1001,
+    "fields": {
+      "name": "Cars & Trucks",
+      "slug": "cars-and-trucks",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1002,
+    "fields": {
+      "name": "Motorcycles",
+      "slug": "motorcycles",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1003,
+    "fields": {
+      "name": "Boats & Watercraft",
+      "slug": "boats-and-watercraft",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1004,
+    "fields": {
+      "name": "RVs & Campers",
+      "slug": "rvs-and-campers",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1005,
+    "fields": {
+      "name": "ATVs & Snowmobiles",
+      "slug": "atvs-and-snowmobiles",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1006,
+    "fields": {
+      "name": "Vehicle Parts & Accessories",
+      "slug": "vehicle-parts-and-accessories",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1007,
+    "fields": {
+      "name": "Bicycles",
+      "slug": "bicycles",
+      "parent": 1000,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1100,
+    "fields": {
+      "name": "Real Estate",
+      "slug": "real-estate",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1101,
+    "fields": {
+      "name": "Houses",
+      "slug": "houses",
+      "parent": 1100,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1102,
+    "fields": {
+      "name": "Apartments",
+      "slug": "apartments",
+      "parent": 1100,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1103,
+    "fields": {
+      "name": "Land Lot",
+      "slug": "land-lot",
+      "parent": 1100,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1104,
+    "fields": {
+      "name": "Commercial Property",
+      "slug": "commercial-property",
+      "parent": 1100,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1200,
+    "fields": {
+      "name": "Services",
+      "slug": "services",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1201,
+    "fields": {
+      "name": "Business Opportunities",
+      "slug": "business-opportunities",
+      "parent": 1200,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1202,
+    "fields": {
+      "name": "Professional Services",
+      "slug": "professional-services",
+      "parent": 1200,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1203,
+    "fields": {
+      "name": "Lessons & Tutoring",
+      "slug": "lessons-and-tutoring",
+      "parent": 1200,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1300,
+    "fields": {
+      "name": "Other Categories",
+      "slug": "other-categories",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1301,
+    "fields": {
+      "name": "Tickets",
+      "slug": "tickets",
+      "parent": 1300,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1302,
+    "fields": {
+      "name": "Gift Cards",
+      "slug": "gift-cards",
+      "parent": 1300,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 1303,
+    "fields": {
+      "name": "Everything Else",
+      "slug": "everything-else",
+      "parent": 1300,
+      "is_visible": true
+    }
+  }
+]

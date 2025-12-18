@@ -1,0 +1,8 @@
+{% extends "account/auth_card.html" %}
+{% block auth_title %}Email verification sent{% endblock %}
+
+{% block auth_body %}
+  <p class="mb-3">We've sent an email to <strong>{{ email }}</strong>. Please check your inbox and follow the link to verify your address.</p>
+  <p class="small text-muted">If you didn't receive the email, check your spam folder or try resend from your account page.</p>
+  <a href="{% url 'account_login' %}" class="btn btn-outline-secondary mt-3">Back to sign in</a>
+{% endblock %}

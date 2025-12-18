@@ -1,0 +1,58 @@
+# === Python & Django ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.log
+*.pot
+*.py,cover
+db.sqlite3
+
+# === Virtual Environments ===
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# === Media & Static (user uploads, build outputs) ===
+media/
+staticfiles/
+*.webp
+*.tmp
+
+# === System / OS Files ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Compiled / Cache ===
+*.bak
+*.log
+*.db
+*.sqlite3
+*.pyc
+*.pyo
+__pycache__/
+*.mo
+
+# === Node / Frontend (if used later) ===
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# === Project-specific ===
+/fixtures/__pycache__/
+# Do not ignore fixtures JSON (for demo data)
+!fixtures/*.json
+
+# === Backups ===
+*.zip
+*.tar
+*.gz
+*.7z

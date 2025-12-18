@@ -1,0 +1,261 @@
+{% extends 'board/base.html' %}
+{% load static %}
+{% block title %}{{ listing.title }} - MarketPlace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Back + Actions -->
+  <div class="mb-3 d-flex justify-content-between align-items-center">
+    <a href="{% url 'category_detail' listing.category.slug %}" class="btn btn-outline-secondary">
+      ← Back to {{ listing.category.name }}
+    </a>
+
+    <div class="d-flex gap-2">
+      {% if user == listing.owner %}
+        <a href="{% url 'edit_listing' listing.id %}" class="btn btn-outline-primary">Edit</a>
+      {% endif %}
+
+      <form method="post" action="{% url 'toggle_favorite' listing.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm {% if is_favorite %}btn-danger{% else %}btn-outline-dark{% endif %}">
+          {% if is_favorite %}♥ Saved{% else %}♡ Save{% endif %}
+        </button>
+      </form>
+
+      <a href="#" class="btn btn-outline-danger btn-sm">Report</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- LEFT: GALLERY -->
+    <div class="col-lg-7">
+
+      {% if listing.images.all %}
+      <div id="listingCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+          {% for img in listing.images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <img src="{{ img.image.url }}" class="d-block w-100" alt="{{ listing.title }}">
+            </div>
+          {% endfor %}
+
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#listingCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#listingCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+      {% else %}
+        <div class="bg-secondary text-white text-center py-5 mb-4" style="border-radius:10px;">
+          No Image
+        </div>
+      {% endif %}
+
+    </div>
+
+    <!-- RIGHT: INFO -->
+    <div class="col-lg-5">
+      {% if listing.label %}
+        <span class="badge bg-danger mb-2">{{ listing.get_label_display }}</span>
+      {% endif %}
+
+      <h2>{{ listing.title }}</h2>
+      <p class="fs-4 fw-bold">${{ listing.price }}</p>
+
+      {% if listing.condition %}
+        <p><strong>Condition:</strong> {{ listing.get_condition_display }}</p>
+      {% endif %}
+      {% if listing.listing_type %}
+        <p><strong>Type:</strong> {{ listing.get_listing_type_display }}</p>
+      {% endif %}
+
+      <p><strong>Category:</strong> {{ listing.category.name }}</p>
+      <p><strong>Location:</strong> {{ listing.city }}, {{ listing.province }}</p>
+      <p><strong>Postal Code:</strong> {{ listing.postal_code }}</p>
+      <p><strong>Phone:</strong> {{ listing.contact_phone }}</p>
+
+      <p><strong>Posted:</strong> {{ listing.created_at|date:"F j, Y" }}</p>
+
+      <p class="mt-3">
+        <strong>Posted by:</strong>
+        <a href="{% url 'user_profile' listing.owner.username %}" class="text-decoration-none">
+          {{ listing.owner.username }}
+        </a>
+
+        {% with st=listing.owner.profile.seller_type %}
+          {% if st %}
+            <span class="badge ms-2
+              {% if st == 'individual' %}bg-secondary
+              {% elif st == 'store' %}bg-info
+              {% elif st == 'business' %}bg-primary
+              {% endif %}">
+              {% if st == 'individual' %}Seller
+              {% elif st == 'store' %}Store
+              {% else %}Business
+              {% endif %}
+            </span>
+          {% endif %}
+        {% endwith %}
+
+        <br>
+        <span class="text-muted">⭐ {{ listing.owner.profile.rating|default:"5.0" }}/5</span>
+      </p>
+
+    </div>
+  </div>
+
+  <!-- DESCRIPTION -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <h4>Description</h4>
+      <p>{{ listing.description|linebreaks }}</p>
+    </div>
+  </div>
+
+  <!-- COMMENTS -->
+  <hr class="my-5">
+
+  <div class="row">
+    <div class="col-12">
+      <h4>Comments</h4>
+
+      {% if user.is_authenticated %}
+      <div class="card p-3 mb-4 shadow-sm">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_comment">
+          <div class="mb-2">{{ comment_form.body }}</div>
+          <button type="submit" class="btn btn-outline-primary btn-sm">Post comment</button>
+        </form>
+      </div>
+      {% else %}
+        <p><a href="{% url 'account_login' %}">Log in</a> to comment.</p>
+      {% endif %}
+
+      {% if comments %}
+      <div class="list-group">
+        {% for c in comments %}
+          <div class="list-group-item" id="comment-{{ c.id }}">
+            <div class="d-flex justify-content-between align-items-start">
+              <strong>{{ c.author.username }}</strong>
+
+              <div class="text-end">
+                <span class="text-muted small d-block">{{ c.created_at|date:"M d, Y H:i" }}</span>
+
+                {% if user.is_authenticated and user == c.author %}
+                  <div class="mt-1">
+                    <button type="button" class="btn btn-link p-0 small me-3" onclick="toggleEditForm({{ c.id }})">
+                      Edit
+                    </button>
+                    <form method="post" action="{% url 'delete_comment' listing.id c.id %}" class="d-inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-link text-danger p-0 small">Delete</button>
+                    </form>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <p class="mb-0 mt-2" id="comment-text-{{ c.id }}">{{ c.body }}</p>
+
+            {% if user.is_authenticated and user == c.author %}
+              <form method="post" action="{% url 'edit_comment' listing.id c.id %}"
+                    id="comment-edit-form-{{ c.id }}" class="mt-2" style="display:none;">
+                {% csrf_token %}
+                <div class="mb-2">
+                  <textarea name="body" class="form-control" rows="3">{{ c.body }}</textarea>
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleEditForm({{ c.id }})">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+        <p class="text-muted">No comments yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- SIMILAR LISTINGS -->
+  <hr class="my-5">
+
+  <div class="row">
+    <div class="col-12">
+      <h4>Similar Listings</h4>
+
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        {% for item in related_listings %}
+        <div class="col">
+          <a href="{% url 'listing_detail' item.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm position-relative">
+
+              {% if item.label %}
+                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                  {{ item.get_label_display }}
+                </span>
+              {% endif %}
+
+              {% with img=item.images.all|first %}
+                {% if img %}
+                  <img src="{{ img.image.url }}" class="card-img-top" alt="{{ item.title }}">
+                {% else %}
+                  <div class="card-img-top bg-secondary text-white text-center py-5">
+                    No Image
+                  </div>
+                {% endif %}
+              {% endwith %}
+
+              <div class="card-body">
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="fw-bold">${{ item.price }}</p>
+
+                <p class="text-muted small mb-1">
+                  <i class="fa-solid fa-location-dot"></i>
+                  {{ item.city|default:item.location|default:item.province }}
+                </p>
+
+                <p class="text-muted small mb-3">
+                  <i class="fa-regular fa-clock"></i>
+                  {{ item.created_at|date:"M d, Y" }}
+                </p>
+
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- EDIT COMMENT JS -->
+<script>
+function toggleEditForm(id) {
+  const form = document.getElementById('comment-edit-form-' + id);
+  const text = document.getElementById('comment-text-' + id);
+  
+  if (!form || !text) return;
+
+  const visible = form.style.display !== 'none';
+  form.style.display = visible ? 'none' : 'block';
+  text.style.display = visible ? 'block' : 'none';
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'board/base.html' %}
+{% block title %}{% if edit_mode %}Edit Listing{% else %}Post an Ad{% endif %} - MarketPlace{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="mb-4 text-center">{% if edit_mode %}Edit Listing{% else %}Post Your Ad{% endif %}</h2>
+      <form method="post" enctype="multipart/form-data" class="vstack gap-3" id="listing-form">
+        {% csrf_token %}
+
+        <!-- Title -->
+        <div>
+          <label class="form-label">Title</label>
+          {{ form.title }}
+        </div>
+
+        <!-- Main Category -->
+        <div>
+          <label class="form-label">Main Category</label>
+          <select id="main-category" class="form-select">
+            <option value="">Select main category</option>
+            {% for cat in all_categories %}
+              <option value="{{ cat.id }}" {% if listing.category.parent and listing.category.parent.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Subcategory -->
+        <div>
+          <label class="form-label">Subcategory</label>
+          <select name="category" id="id_category" class="form-select" {% if not edit_mode %}disabled{% endif %}>
+            {% if edit_mode %}
+              <option value="{{ listing.category.id }}">{{ listing.category.name }}</option>
+            {% else %}
+              <option value="">Select subcategory</option>
+            {% endif %}
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="form-label">Description</label>
+          {{ form.description }}
+        </div>
+
+        <!-- Price -->
+        <div>
+          <label class="form-label">Price ($)</label>
+          {{ form.price }}
+        </div>
+
+        <!-- Uploaded Images (edit only) -->
+        {% if listing and listing.images.all %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label mb-0">Uploaded images</label>
+
+            <form method="post" action="{% url 'delete_all_listing_images' listing.id %}"
+                  onsubmit="return confirm('Delete ALL images? This cannot be undone.');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Delete all images
+              </button>
+            </form>
+          </div>
+
+          <div class="d-flex flex-wrap gap-3">
+            {% for img in listing.images.all %}
+              <div class="card shadow-sm" style="width: 160px;">
+                <img src="{{ img.image.url }}" class="card-img-top"
+                    style="height: 120px; object-fit: cover;" alt="">
+                <div class="card-body p-2 text-center">
+                  <form method="post" action="{% url 'delete_listing_image' listing.id img.id %}"
+                        onsubmit="return confirm('Delete this image?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                      <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+
+        <!-- New Image Uploads -->
+        <div>
+          <label class="form-label">Add Images</label>
+          <div id="image-container" class="vstack gap-2">
+            <input type="file" name="images" class="form-control image-input">
+          </div>
+          <button type="button" id="add-image" class="btn btn-outline-secondary mt-2">+ Add another image</button>
+        </div>
+
+        <!-- Location Details -->
+        <hr>
+        <h5>Location</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Province</label>
+            {{ form.province }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">City</label>
+            {{ form.city }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Location (e.g. neighborhood)</label>
+            {{ form.location }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Postal Code</label>
+            {{ form.postal_code }}
+          </div>
+        </div>
+
+        <!-- Extra Fields -->
+        <hr>
+        <h5>Details</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Condition</label>
+            {{ form.condition }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Listing Type</label>
+            {{ form.listing_type }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Contact Phone</label>
+            {{ form.contact_phone }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Label (optional)</label>
+            {{ form.label }}
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="mt-4">
+          <button type="submit" class="btn btn-success w-100">{% if edit_mode %}Save Changes{% else %}Publish Ad{% endif %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const mainCategorySelect = document.getElementById('main-category');
+  const subCategorySelect = document.getElementById('id_category');
+  const imageContainer = document.getElementById('image-container');
+  const addImageBtn = document.getElementById('add-image');
+
+  const categoryMap = {};
+  {% for cat in all_categories %}
+    {% if cat.subcategories.all %}
+      categoryMap[{{ cat.id }}] = [
+        {% for sub in cat.subcategories.all %}
+          { id: {{ sub.id }}, name: "{{ sub.name }}" }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ];
+    {% endif %}
+  {% endfor %}
+
+  mainCategorySelect.addEventListener('change', function () {
+    const selected = this.value;
+    subCategorySelect.innerHTML = '<option value="">Loading...</option>';
+    subCategorySelect.disabled = true;
+
+    setTimeout(() => {
+      subCategorySelect.innerHTML = '<option value="">Select subcategory</option>';
+
+      if (categoryMap[selected]) {
+        categoryMap[selected].forEach(function (sub) {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.name;
+          subCategorySelect.appendChild(option);
+        });
+        subCategorySelect.disabled = false;
+      }
+    }, 300);
+  });
+
+  addImageBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'images';
+    input.className = 'form-control image-input';
+    imageContainer.appendChild(input);
+  });
+</script>
+{% endblock %}

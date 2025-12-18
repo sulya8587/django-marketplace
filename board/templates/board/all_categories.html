@@ -1,0 +1,65 @@
+{% extends 'board/base.html' %}
+{% block title %}Explore - MarketPlace{% endblock %}
+{% block content %}
+
+<div class="container py-4">
+  <h2 class="text-center mb-4 text-dark fw-bold">All Categories</h2>
+  <div class="row">
+    {% for parent in category_groups %}
+      <div class="col-12 mb-4">
+        <h5 class="text-dark">{{ parent.icon }} {{ parent.name }}</h5>
+        <div class="d-flex flex-wrap gap-2">
+          {% for sub in parent.subcategories.all %}
+            <a href="{% url 'category_detail' sub.slug %}" class="btn btn-outline-secondary btn-sm">
+              {{ sub.name }}
+            </a>
+          {% empty %}
+            <span class="text-muted">No subcategories</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Bottom nav for mobile -->
+<div class="bottom-nav d-md-none">
+  <a href="/"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="#"><i class="fas fa-heart"></i><span>Favorites</span></a>
+  <a href="/create/"><i class="fas fa-plus-circle"></i><span>Post</span></a>
+  <a href="#"><i class="fas fa-envelope"></i><span>Messages</span></a>
+  <a href="/my-account/"><i class="fas fa-user"></i><span>Account</span></a>
+</div>
+
+<style>
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #1B4332;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    z-index: 1000;
+  }
+  .bottom-nav a {
+    color: white;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+  }
+  .bottom-nav i {
+    font-size: 18px;
+  }
+  @media (min-width: 992px) {
+    .bottom-nav {
+      display: none;
+    }
+  }
+</style>
+
+{% endblock %}

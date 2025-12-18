@@ -1,0 +1,462 @@
+[
+  {
+    "model": "board.category",
+    "pk": 1,
+    "fields": {
+      "name": "Smartphones",
+      "slug": "smartphones",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 2,
+    "fields": {
+      "name": "Laptops",
+      "slug": "laptops",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 3,
+    "fields": {
+      "name": "Tablets",
+      "slug": "tablets",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 4,
+    "fields": {
+      "name": "Accessories",
+      "slug": "accessories",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 5,
+    "fields": {
+      "name": "Cameras",
+      "slug": "cameras",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 6,
+    "fields": {
+      "name": "Cars",
+      "slug": "cars",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 7,
+    "fields": {
+      "name": "Motorcycles",
+      "slug": "motorcycles",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 8,
+    "fields": {
+      "name": "Auto Parts",
+      "slug": "auto-parts",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 9,
+    "fields": {
+      "name": "Trucks",
+      "slug": "trucks",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 10,
+    "fields": {
+      "name": "Rent",
+      "slug": "rent",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 11,
+    "fields": {
+      "name": "Apartments for Rent",
+      "slug": "apartments-for-rent",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 12,
+    "fields": {
+      "name": "Houses for Sale",
+      "slug": "houses-for-sale",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 13,
+    "fields": {
+      "name": "Land",
+      "slug": "land",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 14,
+    "fields": {
+      "name": "Commercial",
+      "slug": "commercial",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 15,
+    "fields": {
+      "name": "Short-Term",
+      "slug": "short-term",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 16,
+    "fields": {
+      "name": "Furniture",
+      "slug": "furniture",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 17,
+    "fields": {
+      "name": "Kitchen",
+      "slug": "kitchen",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 18,
+    "fields": {
+      "name": "Lighting",
+      "slug": "lighting",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 19,
+    "fields": {
+      "name": "Garden Tools",
+      "slug": "garden-tools",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 20,
+    "fields": {
+      "name": "Decor",
+      "slug": "decor",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 21,
+    "fields": {
+      "name": "Men’s",
+      "slug": "mens",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 22,
+    "fields": {
+      "name": "Women’s",
+      "slug": "womens",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 23,
+    "fields": {
+      "name": "Shoes",
+      "slug": "shoes",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 24,
+    "fields": {
+      "name": "Bags",
+      "slug": "bags",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 25,
+    "fields": {
+      "name": "Jewelry",
+      "slug": "jewelry",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 26,
+    "fields": {
+      "name": "IT",
+      "slug": "it",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 27,
+    "fields": {
+      "name": "Sales",
+      "slug": "sales",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 28,
+    "fields": {
+      "name": "Design",
+      "slug": "design",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 29,
+    "fields": {
+      "name": "Education",
+      "slug": "education",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 30,
+    "fields": {
+      "name": "Remote",
+      "slug": "remote",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 31,
+    "fields": {
+      "name": "Repair",
+      "slug": "repair",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 32,
+    "fields": {
+      "name": "Cleaning",
+      "slug": "cleaning",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 33,
+    "fields": {
+      "name": "Moving",
+      "slug": "moving",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 34,
+    "fields": {
+      "name": "Freelance",
+      "slug": "freelance",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 35,
+    "fields": {
+      "name": "Tutoring",
+      "slug": "tutoring",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 36,
+    "fields": {
+      "name": "Fashion",
+      "slug": "fashion",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 37,
+    "fields": {
+      "name": "Vehicles & Transportation",
+      "slug": "vehicles-and-transportation",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 38,
+    "fields": {
+      "name": "Cars & Trucks",
+      "slug": "cars-and-trucks",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 39,
+    "fields": {
+      "name": "Boats & Watercraft",
+      "slug": "boats-and-watercraft",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 40,
+    "fields": {
+      "name": "RVs & Campers",
+      "slug": "rvs-and-campers",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 41,
+    "fields": {
+      "name": "ATVs & Snowmobiles",
+      "slug": "atvs-and-snowmobiles",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 42,
+    "fields": {
+      "name": "Vehicle Parts & Accessories",
+      "slug": "vehicle-parts-and-accessories",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 43,
+    "fields": {
+      "name": "Bicycles",
+      "slug": "bicycles",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 44,
+    "fields": {
+      "name": "Business Opportunities",
+      "slug": "business-opportunities",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 45,
+    "fields": {
+      "name": "Professional Services",
+      "slug": "professional-services",
+      "parent": null,
+      "is_visible": true
+    }
+  },
+  {
+    "model": "board.category",
+    "pk": 46,
+    "fields": {
+      "name": "Lessons & Tutoring",
+      "slug": "lessons-and-tutoring",
+      "parent": null,
+      "is_visible": true
+    }
+  }
+]

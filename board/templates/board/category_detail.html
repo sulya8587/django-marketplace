@@ -1,0 +1,186 @@
+{% extends "board/base.html" %}
+{% load static %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="container-xxl py-4">
+  <div class="row g-4">
+
+    <!-- ===== Left Sidebar: Categories + Filters ===== -->
+    <aside class="col-lg-3 d-none d-lg-block">
+
+      <!-- Categories Block -->
+      <div class="cu-card p-3 mb-3">
+        <h5 class="mb-3">Categories</h5>
+        <ul class="list-group list-group-flush">
+          {% for root in root_categories %}
+            <li class="list-group-item border-0 px-0">
+
+              <!-- Button for collapsing -->
+              <button class="d-flex justify-content-between align-items-center w-100 btn btn-link text-start text-dark px-0"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#subcat-{{ root.id }}"
+                      aria-expanded="{% if root.id == category.id or root.id == category.parent_id %}true{% else %}false{% endif %}">
+                <span class="{% if root.id == category.id or root.id == category.parent_id %}fw-bold{% endif %}">
+                  {{ root.name }}
+                </span>
+                <i class="fa-solid fa-chevron-down small" style="transition: 0.25s;"></i>
+              </button>
+
+              <!-- Subcategories -->
+              <ul id="subcat-{{ root.id }}" class="collapse ps-3 mt-2 {% if root.id == category.id or root.id == category.parent_id %}show{% endif %}">
+                {% for sub in root.subcategories.all %}
+                  <li class="py-1">
+                    <a href="{% url 'category_detail' sub.slug %}"
+                       class="text-decoration-none {% if sub.id == category.id %}fw-bold text-dark{% else %}text-muted{% endif %}">
+                      {{ sub.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Filters Block -->
+      <div class="cu-card p-3">
+        <h5 class="mb-3">Filters</h5>
+
+        <form method="get">
+          <div class="mb-3">
+            <label class="form-label">Search</label>
+            <input type="text" name="q" class="form-control" value="{{ request.GET.q }}" placeholder="Keyword">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Province</label>
+            <select name="province" class="form-select">
+              <option value="">Any</option>
+              {% for val,label in province_choices %}
+                <option value="{{ val }}" {% if request.GET.province == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">City</label>
+            <input type="text" name="city" class="form-control" value="{{ request.GET.city }}" placeholder="e.g Toronto">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Type</label>
+            <select name="listing_type" class="form-select">
+              <option value="">Any</option>
+              {% for val,label in type_choices %}
+                <option value="{{ val }}" {% if request.GET.listing_type == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Condition</label>
+            <select name="condition" class="form-select">
+              <option value="">Any</option>
+              {% for val,label in condition_choices %}
+                <option value="{{ val }}" {% if request.GET.condition == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Price (min-max)</label>
+            <input type="text" name="price_range" class="form-control" value="{{ request.GET.price_range }}" placeholder="100-500">
+          </div>
+
+          <button class="btn btn-primary w-100">Apply</button>
+        </form>
+      </div>
+
+    </aside>
+
+    <!-- ===== Right Column: Listings ===== -->
+    <section class="col-lg-9">
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">{{ category.name }}</h3>
+
+        <!-- Sorting -->
+        <form method="get" class="d-flex">
+          {% for k,v in request.GET.items %}
+            {% if k != 'sort' %}
+              <input type="hidden" name="{{ k }}" value="{{ v }}">
+            {% endif %}
+          {% endfor %}
+          <select name="sort" onchange="this.form.submit()" class="form-select form-select-sm">
+            <option value="newest" {% if request.GET.sort == 'newest' or not request.GET.sort %}selected{% endif %}>Newest</option>
+            <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest</option>
+            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price ↑</option>
+            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price ↓</option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Subcategories -->
+      {% if subcategories %}
+        <div class="mb-4">
+          <h6 class="mb-2">Subcategories</h6>
+          <div class="d-flex flex-wrap gap-2">
+            {% for sub in subcategories %}
+              <a href="{% url 'category_detail' sub.slug %}" class="btn btn-outline-secondary btn-sm">{{ sub.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Listings -->
+      {% if listings %}
+        <div class="cu-grid">
+          {% for item in listings %}
+            <article class="cu-card">
+              <div class="cu-card__image-wrap">
+                {% with img=item.images.all|first %}
+                  {% if img and img.image %}
+                    <img src="{{ img.image.url }}" alt="{{ item.title }}" class="cu-card__image">
+                  {% else %}
+                    <div class="cu-card__image cu-card__image--noimg">No Image</div>
+                  {% endif %}
+                {% endwith %}
+                {% if item.label %}
+                  <div class="cu-card__ribbon">{{ item.get_label_display }}</div>
+                {% endif %}
+              </div>
+
+              <div class="cu-card__body">
+                <h6 class="cu-card__title">
+                  <a href="{% url 'listing_detail' item.id %}">{{ item.title }}</a>
+                </h6>
+
+                <p class="cu-card__price">${{ item.price }}</p>
+
+                <div class="cu-card__meta">
+                  {% with loc=item.city|default:item.location|default:item.province %}
+                    {% if loc %}
+                      <span><i class="fa-solid fa-location-dot"></i>{{ loc }}</span>
+                    {% endif %}
+                  {% endwith %}
+                  {% if item.created_at %}
+                    <span><i class="fa-regular fa-clock"></i>{{ item.created_at|date:"M d, Y" }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">No listings found.</p>
+      {% endif %}
+
+    </section>
+
+  </div>
+</div>
+{% endblock %}

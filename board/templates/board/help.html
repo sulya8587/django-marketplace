@@ -1,0 +1,290 @@
+{% extends 'board/base.html' %}
+{% block title %}Help — Instructions{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Title + Search -->
+  <div class="row align-items-center mb-4">
+    <div class="col-md-7">
+      <h2 class="mb-1">Help Center</h2>
+      <p class="text-muted mb-0">Find answers: expand a section or use the search below.</p>
+    </div>
+    <div class="col-md-5 mt-3 mt-md-0">
+      <input id="helpSearch" type="search" class="form-control form-control-lg"
+             placeholder="Search: “create listing”, “favorites”, “reviews”…">
+    </div>
+  </div>
+
+  <!-- Quick navigation -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-wrap gap-2">
+        <a href="#sec-start" class="btn btn-sm btn-outline-secondary">Getting Started</a>
+        <a href="#sec-profile" class="btn btn-sm btn-outline-secondary">Profile</a>
+        <a href="#sec-create" class="btn btn-sm btn-outline-secondary">Create Listing</a>
+        <a href="#sec-photos" class="btn btn-sm btn-outline-secondary">Photos</a>
+        <a href="#sec-manage" class="btn btn-sm btn-outline-secondary">Manage Listings</a>
+        <a href="#sec-search" class="btn btn-sm btn-outline-secondary">Search & Filters</a>
+        <a href="#sec-favorites" class="btn btn-sm btn-outline-secondary">Favorites</a>
+        <a href="#sec-comments" class="btn btn-sm btn-outline-secondary">Comments</a>
+        <a href="#sec-reviews" class="btn btn-sm btn-outline-secondary">Seller Reviews</a>
+        <a href="#sec-report" class="btn btn-sm btn-outline-secondary">Report</a>
+        <a href="#sec-safety" class="btn btn-sm btn-outline-secondary">Safety</a>
+        <a href="#sec-troubles" class="btn btn-sm btn-outline-secondary">Troubleshooting</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accordion -->
+  <div class="accordion accordion-flush" id="helpAccordion">
+
+    <!-- Getting Started -->
+    <div class="accordion-item" id="sec-start" data-help>
+      <h2 class="accordion-header" id="headingStart">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStart">
+          🚀 Getting Started: Registration & Login
+        </button>
+      </h2>
+      <div id="collapseStart" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>Click <strong>Login / Register</strong> in the top menu.</li>
+            <li>Fill in the registration form or log in with existing credentials.</li>
+            <li>Once logged in, your <strong>My Account</strong> page is available for editing your profile.</li>
+          </ol>
+          <p class="mb-1"><strong>Tip:</strong> Set your account type (Seller / Store / Business) — it’s shown on your listings.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile -->
+    <div class="accordion-item" id="sec-profile" data-help>
+      <h2 class="accordion-header" id="headingProfile">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile">
+          👤 Seller Profile: account type, rating, contacts
+        </button>
+      </h2>
+      <div id="collapseProfile" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <h6>Edit your profile</h6>
+          <ol>
+            <li>Go to <strong>My Account → Edit Profile</strong>.</li>
+            <li>Update <em>Phone</em>, <em>Bio</em>, <em>Avatar</em>, and select <em>Account type</em> (Seller/Store/Business).</li>
+            <li>Save — your badge and rating will be shown on your listings.</li>
+          </ol>
+          <h6 class="mt-3">Seller rating</h6>
+          <ul>
+            <li>Ratings are based on <strong>reviews left on your profile</strong> by other users.</li>
+            <li>The average rating is displayed next to your username and on your listings.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Listing -->
+    <div class="accordion-item" id="sec-create" data-help>
+      <h2 class="accordion-header" id="headingCreate">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCreate">
+          ➕ Create a Listing
+        </button>
+      </h2>
+      <div id="collapseCreate" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>Click <strong>Post / Create</strong> (top menu or bottom mobile navigation).</li>
+            <li>Fill in: <em>Title</em>, <em>Description</em>, <em>Price</em>, <em>Type</em>, <em>Condition</em>, <em>City</em>, <em>Province</em>, <em>Postal code</em>, <em>Phone</em>.</li>
+            <li>Select <strong>Category → Subcategory</strong> (subcategories load dynamically).</li>
+            <li>Upload multiple photos and save.</li>
+          </ol>
+          <p class="mb-0"><strong>Labels:</strong> “New”, “Top”, “Urgent” — shown as red badges.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photos -->
+    <div class="accordion-item" id="sec-photos" data-help>
+      <h2 class="accordion-header" id="headingPhotos">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePhotos">
+          🖼️ Photos: upload & gallery
+        </button>
+      </h2>
+      <div id="collapsePhotos" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ul>
+            <li>You can upload <strong>multiple images</strong>.</li>
+            <li>On the listing page, a <strong>carousel</strong> is available to scroll through images.</li>
+            <li>If no images, a “No Image” placeholder is shown.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage -->
+    <div class="accordion-item" id="sec-manage" data-help>
+      <h2 class="accordion-header" id="headingManage">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseManage">
+          ✏️ Edit & Delete Listings
+        </button>
+      </h2>
+      <div id="collapseManage" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>Open your listing → <strong>Edit</strong> button (visible only to owner).</li>
+            <li>To delete: <strong>Delete</strong> in <em>My Account → My Listings</em> or directly on the listing page.</li>
+            <li>New photos can be uploaded while editing — they will appear in the gallery.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="accordion-item" id="sec-search" data-help>
+      <h2 class="accordion-header" id="headingSearch">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSearch">
+          🔍 Search & Filters
+        </button>
+      </h2>
+      <div id="collapseSearch" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ul>
+            <li>Search from the header or category page by: <em>title, description, city, province, category</em>.</li>
+            <li>Filters: <em>type</em>, <em>condition</em>, <em>price range</em>, <em>city</em>, <em>province</em>.</li>
+            <li>Sorting: <em>Newest</em>, <em>Oldest</em>, <em>Price: Low→High</em>, <em>High→Low</em>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorites -->
+    <div class="accordion-item" id="sec-favorites" data-help>
+      <h2 class="accordion-header" id="headingFav">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFav">
+          ❤️ Favorites (Saved)
+        </button>
+      </h2>
+      <div id="collapseFav" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>On a listing page click <strong>♡ Save</strong> / <strong>♥ Saved</strong>.</li>
+            <li>All saved listings are in <strong>My Account → Saved Listings</strong>.</li>
+            <li>Click again to remove from favorites.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="accordion-item" id="sec-comments" data-help>
+      <h2 class="accordion-header" id="headingComments">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComments">
+          💬 Comments under Listings
+        </button>
+      </h2>
+      <div id="collapseComments" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>Login → open a listing → leave a comment in the <strong>Comments</strong> block.</li>
+            <li>You can <strong>edit</strong> or <strong>delete</strong> your own comments.</li>
+            <li>Comments are visible to everyone on the listing page.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="accordion-item" id="sec-reviews" data-help>
+      <h2 class="accordion-header" id="headingReviews">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReviews">
+          ⭐ Seller Reviews (on profile page)
+        </button>
+      </h2>
+      <div id="collapseReviews" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>Open seller’s profile (link “Posted by…” on a listing).</li>
+            <li>In <strong>Reviews</strong> section: choose stars, add optional comment.</li>
+            <li>One review per seller; resubmitting will update your review.</li>
+            <li>You can delete your own review anytime.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <div class="accordion-item" id="sec-report" data-help>
+      <h2 class="accordion-header" id="headingReport">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReport">
+          🚩 Report a Listing
+        </button>
+      </h2>
+      <div id="collapseReport" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ol>
+            <li>On a listing page click <strong>Report</strong>.</li>
+            <li>Describe the reason (fraud, spam, prohibited item, etc.).</li>
+            <li>Our moderators will review and may contact you.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety -->
+    <div class="accordion-item" id="sec-safety" data-help>
+      <h2 class="accordion-header" id="headingSafety">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSafety">
+          🔒 Safety Tips
+        </button>
+      </h2>
+      <div id="collapseSafety" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ul>
+            <li>Meet in public places, bring a friend.</li>
+            <li>Check the product before paying; keep receipts and chats.</li>
+            <li>Never send prepayment to strangers.</li>
+            <li>Do not share passwords or confirmation codes.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="accordion-item" id="sec-troubles" data-help>
+      <h2 class="accordion-header" id="headingTroubles">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTroubles">
+          🧩 Troubleshooting
+        </button>
+      </h2>
+      <div id="collapseTroubles" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+        <div class="accordion-body">
+          <ul>
+            <li><strong>Cannot post a comment:</strong> you must be logged in.</li>
+            <li><strong>Edit/Delete buttons missing:</strong> only owners see them.</li>
+            <li><strong>Subcategories not loading:</strong> refresh the page, they load dynamically.</li>
+            <li><strong>Image upload fails:</strong> try JPG/PNG and check file size.</li>
+            <li><strong>Cannot save to favorites:</strong> login first, then click “♡ Save”.</li>
+          </ul>
+          <p class="mb-0">Still need help? Contact us: <a href="mailto:support@example.com">support@example.com</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Search script -->
+<script>
+  (function(){
+    const input = document.getElementById('helpSearch');
+    const items = Array.from(document.querySelectorAll('[data-help]'));
+    if (!input) return;
+    input.addEventListener('input', function(){
+      const q = this.value.toLowerCase().trim();
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = q ? (text.includes(q) ? '' : 'none') : '';
+      });
+    });
+  })();
+</script>
+{% endblock %}

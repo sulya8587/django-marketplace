@@ -1,0 +1,317 @@
+{% extends 'board/base.html' %}
+{% load static %}
+{% block title %}Home - MarketPlace{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="banner-carousel">
+  <div id="carouselBanner" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="15000">
+    <div class="carousel-inner">
+
+      <div class="carousel-item active">
+        <img src="{% static 'board/img/banner-1.jpg' %}" class="d-block w-100 rounded" alt="Banner 1">
+        <div class="carousel-caption d-none d-md-block banner-pill banner-pill-1">
+          <h5>Welcome to MarketPlace</h5>
+        </div>
+      </div>
+
+      <div class="carousel-item">
+        <img src="{% static 'board/img/banner-2.jpg' %}" class="d-block w-100 rounded" alt="Banner 2">
+        <div class="carousel-caption d-none d-md-block banner-pill banner-pill-2">
+          <h5>Find Great Deals Every Day</h5>
+        </div>
+      </div>
+
+      <div class="carousel-item">
+        <img src="{% static 'board/img/banner-3.jpg' %}" class="d-block w-100 rounded" alt="Banner 3">
+        <div class="carousel-caption d-none d-md-block banner-pill banner-pill-3">
+          <h5>Post Your Ad in Minutes</h5>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBanner" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselBanner" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  /* Картинки баннеров */
+  .banner-carousel img {
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+  @media (max-width: 768px) {
+    .banner-carousel img {
+      max-height: 320px;
+    }
+  }
+
+  /* Общий стиль для капсул */
+  .banner-pill {
+    bottom: 14%;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    padding: 14px 40px;
+    border-radius: 999px;
+    color: #fff;
+    opacity: 0; /* по умолчанию скрыто, анимируем при активном слайде */
+
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+  }
+
+  .banner-pill h5 {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+
+  /* Разные градиенты для каждого слайда (по желанию) */
+  .banner-pill-1 {
+    background: linear-gradient(90deg, #ff7b00, #ff006a);
+  }
+  .banner-pill-2 {
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  }
+  .banner-pill-3 {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+  }
+
+  /* Анимация появления при активном слайде */
+  .carousel-item.active .banner-pill {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    animation: bannerFadeUp 0.7s ease-out;
+  }
+
+  @keyframes bannerFadeUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 30px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  /* Чуть поменьше текст на мобильных */
+  @media (max-width: 768px) {
+    .banner-pill {
+      padding: 10px 24px;
+      bottom: 10%;
+    }
+    .banner-pill h5 {
+      font-size: 1.4rem;
+    }
+  }
+</style>
+
+<!-- Popular Categories -->
+<section class="py-4">
+  <div class="container">
+    <div class="row g-3 justify-content-center">
+      {% for category in category_groups %}
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none">
+            <div class="cu-card p-3 text-center h-100">
+              <div class="fs-1">{{ category.icon }}</div>
+              <p class="mt-2 text-dark fw-semibold mb-0">{{ category.name }}</p>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+{% if has_location and nearby_listings %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Listings near {{ location_label }}</h2>
+      <a href="{% url 'nearby_listings' %}" class="btn btn-outline-primary">
+        View all →
+      </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+      {% for item in nearby_listings %}
+        <div class="col">
+          <a href="{% url 'listing_detail' item.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm">
+              {% with img=item.images.all|first %}
+                {% if img %}
+                  <img src="{{ img.image.url }}" class="card-img-top"
+                       style="height:180px; object-fit:cover;">
+                {% else %}
+                  <div class="card-img-top bg-secondary text-white text-center py-5">
+                    No Image
+                  </div>
+                {% endif %}
+              {% endwith %}
+
+              <div class="card-body">
+                <h6 class="mb-1">{{ item.title }}</h6>
+                <div class="small text-muted mb-1">
+                  {{ item.city }}{% if item.province %}, {{ item.province }}{% endif %}
+                </div>
+                <div class="fw-bold">${{ item.price }}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Popular Listings -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4 text-dark">Listings</h2>
+
+    {% if listings %}
+      <div class="cu-grid">
+        {% for item in listings %}
+          <article class="cu-card">
+            <!-- Image -->
+            <div class="cu-card__image-wrap">
+              {% with first=item.images.all|first %}
+                {% if first and first.image %}
+                  <img src="{{ first.image.url }}" class="cu-card__image" alt="{{ item.title }}">
+                {% else %}
+                  <div class="cu-card__image cu-card__image--noimg">No Image</div>
+                {% endif %}
+              {% endwith %}
+
+              {% if item.label %}
+                <div class="cu-card__ribbon">{{ item.get_label_display }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Body -->
+            <div class="cu-card__body">
+              <h6 class="cu-card__title mb-1">
+                <a href="{% url 'listing_detail' item.id %}">{{ item.title }}</a>
+              </h6>
+
+              <p class="cu-card__price mb-1">{{ item.price }} $</p>
+
+              <p class="card-text small text-muted mb-1">
+                <strong>By:</strong>
+                <a href="{% url 'user_profile' item.owner.username %}" class="text-decoration-none">
+                  {{ item.owner.username }}
+                </a>
+                {% with st=item.owner.profile.seller_type %}
+                  {% if st %}
+                    <span class="badge ms-1
+                      {% if st == 'individual' %}bg-secondary
+                      {% elif st == 'store' %}bg-info
+                      {% elif st == 'business' %}bg-primary
+                      {% endif %}">
+                      {% if st == 'individual' %}Seller{% elif st == 'store' %}Store{% else %}Business{% endif %}
+                    </span>
+                  {% endif %}
+                {% endwith %}
+              </p>
+
+              <p class="card-text small text-muted mb-1">
+                ⭐ {{ item.owner.profile.rating|default:"5.0" }}/5
+              </p>
+
+              <div class="cu-card__meta mt-1">
+                {% with loc=item.city|default:item.location|default:item.province %}
+                  {% if loc %}
+                    <span><i class="fa-solid fa-location-dot"></i>{{ loc }}</span>
+                  {% endif %}
+                {% endwith %}
+                {% if item.created_at %}
+                  <span><i class="fa-regular fa-clock"></i>{{ item.created_at|date:"M d, Y" }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-muted">No listings available.</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- User Reviews -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="d-inline-block">User Reviews</h2>
+      <a href="{% url 'info_page' %}" class="btn btn-sm btn-outline-secondary ms-2 align-baseline">more &gt;</a>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="review-card p-4 shadow-sm rounded text-center cu-card">
+          <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 70px; height: 70px;">
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <h6>Anna Smith</h6>
+          <div>⭐⭐⭐⭐⭐</div>
+          <p class="small mt-2 mb-0">"Amazing platform, very easy to use!"</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="review-card p-4 shadow-sm rounded text-center cu-card">
+          <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 70px; height: 70px;">
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <h6>John Doe</h6>
+          <div>⭐⭐⭐⭐</div>
+          <p class="small mt-2 mb-0">"Good experience overall."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- News & Updates -->
+<section class="py-5 bg-secondary text-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="d-inline-block">News & Updates</h2>
+      <a href="{% url 'info_page' %}" class="btn btn-sm btn-outline-light ms-2 align-baseline">more &gt;</a>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="p-4 shadow-sm rounded h-100 bg-light text-dark cu-card">
+          <h5>🎉 New Features Released!</h5>
+          <p class="small mt-2 mb-1">
+            We have launched a new messaging system for easier communication between users.
+          </p>
+          <span class="text-muted small">April 2025</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="p-4 shadow-sm rounded h-100 bg-light text-dark cu-card">
+          <h5>🔒 Safety Tips</h5>
+          <p class="small mt-2 mb-1">
+            Always meet in public places and verify products before purchasing.
+          </p>
+          <span class="text-muted small">March 2025</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'board/base.html' %}
+{% block title %}User Reviews - MarketPlace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">User Reviews</h2>
+
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'user_reviews' %}" class="mb-5">
+      {% csrf_token %}
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-2">
+          <label class="form-label">Rating</label>
+          {{ form.rating }}
+        </div>
+        <div class="col-12 col-md-8">
+          <label class="form-label">Your review</label>
+          {{ form.comment }}
+        </div>
+        <div class="col-12 col-md-2">
+          <button type="submit" class="btn btn-success w-100">Send</button>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <div class="alert alert-info mb-5">
+      Please <a href="{% url 'account_login' %}">login</a> to write a review.
+    </div>
+  {% endif %}
+
+  {% if reviews %}
+    <div class="list-group shadow-sm">
+      {% for r in reviews %}
+        <div class="list-group-item">
+          <div class="d-flex justify-content-between">
+            <strong>{{ r.user.username }}</strong>
+            <span class="text-warning">⭐ {{ r.rating }}/5</span>
+          </div>
+          {% if r.comment %}
+            <p class="text-muted mb-1 mt-1">{{ r.comment }}</p>
+          {% endif %}
+          <small class="text-secondary">{{ r.created_at|date:"M d, Y H:i" }}</small>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No reviews yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

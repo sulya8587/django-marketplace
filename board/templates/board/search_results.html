@@ -1,0 +1,64 @@
+{% extends 'board/base.html' %}
+{% block title %}Search Results - MarketPlace{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+
+  {% if results %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for item in results %}
+        <div class="col">
+          <a href="{% url 'listing_detail' item.id %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm position-relative">
+              {% if item.label %}
+                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                  {{ item.get_label_display }}
+                </span>
+              {% endif %}
+
+              {% if item.image %}
+                <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+              {% else %}
+                <div class="card-img-top bg-secondary text-white text-center py-5">No Image</div>
+              {% endif %}
+
+              <div class="card-body">
+                <h5 class="card-title">{{ item.title }}</h5>
+
+                <!-- Продавец + тип аккаунта -->
+                <p class="card-text small text-muted mb-1">
+                  <strong>By:</strong>
+                  <a href="{% url 'user_profile' item.owner.username %}" class="text-decoration-none">
+                    {{ item.owner.username }}
+                  </a>
+                  {% with st=item.owner.profile.seller_type %}
+                    {% if st %}
+                      <span class="badge ms-1
+                        {% if st == 'individual' %}bg-secondary
+                        {% elif st == 'store' %}bg-info
+                        {% elif st == 'business' %}bg-primary
+                        {% endif %}">
+                        {% if st == 'individual' %}Seller{% elif st == 'store' %}Store{% else %}Business{% endif %}
+                      </span>
+                    {% endif %}
+                  {% endwith %}
+                </p>
+
+                <!-- Рейтинг и дата -->
+                <p class="card-text small text-muted mb-1">⭐ {{ item.owner.profile.rating|default:"5.0" }}/5</p>
+                <p class="card-text small text-muted mb-1">Posted: {{ item.created_at|date:"M d, Y" }}</p>
+
+                <!-- Цена и локация -->
+                <p class="card-text fw-bold">CAD ${{ item.price }}</p>
+                <p class="card-text small text-muted">{{ item.city }}, {{ item.province }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">No results found for your search.</div>
+  {% endif %}
+</div>
+{% endblock %}

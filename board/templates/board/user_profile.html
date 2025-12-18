@@ -1,0 +1,169 @@
+{% extends 'board/base.html' %}
+{% block title %}{{ seller.username }}'s Profile - MarketPlace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Профиль -->
+  <div class="row mb-4">
+    <div class="col-md-4 text-center">
+      {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" class="rounded-circle mb-3 shadow" width="120" height="120">
+      {% else %}
+        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px;">
+          <i class="fas fa-user fa-2x"></i>
+        </div>
+      {% endif %}
+      <h3 class="fw-bold d-inline-block me-2">{{ seller.username }}</h3>
+      {% with st=profile.seller_type %}
+        {% if st %}
+          <span class="badge {% if st == 'individual' %}bg-secondary{% elif st == 'store' %}bg-info{% elif st == 'business' %}bg-primary{% endif %}">
+            {% if st == 'individual' %}Seller{% elif st == 'store' %}Store{% else %}Business{% endif %}
+          </span>
+        {% endif %}
+      {% endwith %}
+      <p class="text-muted mt-2">⭐ {{ avg_rating|default:profile.rating|default:"5.0" }}/5</p>
+      <p class="small text-muted">Member since {{ seller.date_joined|date:"F Y" }}</p>
+      {% if profile.show_email or profile.show_phone %}
+        {% if profile.show_email %}
+          <p class="mb-1">📧 {{ seller.email }}</p>
+        {% endif %}
+        {% if profile.show_phone %}
+          <p class="mb-0">📞 {{ profile.phone }}</p>
+        {% endif %}
+      {% else %}
+        <p class="text-muted"><em>Seller prefers private contact</em></p>
+      {% endif %}
+
+    </div>
+
+    <div class="col-md-8">
+      {% if profile.bio %}
+        <div class="card shadow-sm p-3">
+          <h5>About</h5>
+          <p class="mb-0">{{ profile.bio }}</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Объявления продавца -->
+  <h4 class="mb-3">{{ seller.username }}'s Listings</h4>
+  <div class="row g-3 mb-4">
+    {% for item in listings %}
+      <div class="col-12 col-sm-6 col-md-4">
+        <a href="{% url 'listing_detail' item.id %}" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm position-relative">
+            {% if item.label %}<span class="badge bg-danger position-absolute top-0 end-0 m-2">{{ item.get_label_display }}</span>{% endif %}
+            {% if item.image %}
+              <img src="{{ item.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+            {% else %}
+              <div class="card-img-top bg-secondary text-white text-center py-5">No Image</div>
+            {% endif %}
+            <div class="card-body">
+              <h6 class="card-title">{{ item.title }}</h6>
+              <p class="card-text small text-muted mb-1">⭐ {{ profile.rating|default:"5.0" }}/5</p>
+              <p class="card-text small text-muted mb-1">Posted: {{ item.created_at|date:"M d, Y" }}</p>
+              <p class="card-text fw-bold">${{ item.price }}</p>
+              <span class="badge {% if profile.seller_type == 'individual' %}bg-secondary{% elif profile.seller_type == 'store' %}bg-info{% elif profile.seller_type == 'business' %}bg-primary{% endif %}">
+                {% if profile.seller_type == 'individual' %}Seller{% elif profile.seller_type == 'store' %}Store{% else %}Business{% endif %}
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <p class="text-muted">This user hasn't posted any listings yet.</p>
+    {% endfor %}
+  </div>
+
+  <hr>
+
+  <!-- REVIEWS -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Reviews</h4>
+    <div class="d-flex align-items-center gap-2">
+      {% if avg_rating %}
+        <span class="rating-stars" aria-label="Average {{ avg_rating }} out of 5">
+          {% for i in "12345" %}{% if forloop.counter <= avg_rating|floatformat:0 %}★{% else %}☆{% endif %}{% endfor %}
+        </span>
+        <span class="text-muted">{{ avg_rating }}/5</span>
+      {% else %}
+        <span class="text-muted">No ratings yet</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if request.user.is_authenticated and request.user != seller %}
+    <div class="card p-3 mb-4 shadow-sm">
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3 align-items-center">
+          <div class="col-md-4">
+            <label class="form-label mb-1">Your rating</label>
+            <style>
+              .star-rating { display:flex; flex-direction: row-reverse; gap:6px; }
+              .star-rating input { display:none; }
+              .star-rating label { font-size: 2rem; cursor: pointer; line-height:1; user-select:none; }
+              .star-rating label::before { content: '☆'; }
+              .star-rating input:checked ~ label::before,
+              .star-rating label:hover::before,
+              .star-rating label:hover ~ label::before { content: '★'; }
+              .rating-stars { font-size: 1.1rem; color:#f5c518; line-height:1; }
+            </style>
+            <div class="star-rating" aria-label="Choose rating">
+              <input type="radio" id="star5" name="rating" value="5" {% if request.POST.rating == '5' %}checked{% endif %}><label for="star5">★</label>
+              <input type="radio" id="star4" name="rating" value="4" {% if request.POST.rating == '4' %}checked{% endif %}><label for="star4">★</label>
+              <input type="radio" id="star3" name="rating" value="3" {% if request.POST.rating == '3' %}checked{% endif %}><label for="star3">★</label>
+              <input type="radio" id="star2" name="rating" value="2" {% if request.POST.rating == '2' %}checked{% endif %}><label for="star2">★</label>
+              <input type="radio" id="star1" name="rating" value="1" {% if request.POST.rating == '1' %}checked{% endif %}><label for="star1">★</label>
+            </div>
+            <div class="form-text">Click a star to rate.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label mb-1">Your review (optional)</label>
+            {{ form.comment }}
+          </div>
+          <div class="col-md-2 d-grid">
+            <input type="hidden" name="action" value="add_review">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+        <p class="small text-muted mt-2 mb-0">One review per user; re‑submitting overwrites your previous review.</p>
+      </form>
+    </div>
+  {% elif not request.user.is_authenticated %}
+    <p><a href="{% url 'account_login' %}">Log in</a> to leave a review.</p>
+  {% endif %}
+
+  {% if reviews %}
+    <div class="list-group">
+      {% for review in reviews %}
+        <div class="list-group-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <strong>{{ review.reviewer.username }}</strong>
+              <span class="ms-2 rating-stars" aria-label="{{ review.rating }} out of 5">
+                {% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+              </span>
+            </div>
+            <div class="text-end">
+              <span class="text-muted small d-block">{{ review.created_at|date:"M d, Y" }}</span>
+              {% if request.user.is_authenticated and request.user == review.reviewer %}
+                <form method="post" action="{% url 'delete_user_review' seller.username %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-link text-danger p-0 small">Delete review</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+          {% if review.comment %}<p class="mb-0 mt-2">{{ review.comment }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No reviews yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

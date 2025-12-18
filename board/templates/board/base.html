@@ -1,0 +1,294 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}MarketPlace{% endblock %}</title>
+
+  <!-- Fonts & libs -->
+  <link href="https://fonts.googleapis.com/css2?family=Meddon&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Project CSS -->
+  <link rel="stylesheet" href="{% static 'board/css/styles.css' %}">
+
+  <style>
+    /* (твой inline CSS — оставил как есть) */
+    .container-xxl { max-width: 1280px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
+    :root{ --bottom-nav-height: 80px; --safe-area-inset-bottom: env(safe-area-inset-bottom); }
+    .navbar-marketplace{ padding:.75rem 0; }
+    .logo-text{ font-weight:800; font-size:28px; letter-spacing:.5px; font-family:'Meddon',cursive; }
+    .search-box .form-control{ height:46px; border-radius:10px; font-size:16px; }
+    .search-box .btn{ height:46px; border-radius:10px; font-weight:600; }
+    .search-mobile{ position:sticky; top:56px; z-index:1029; background:#fff; border-bottom:1px solid #eee; }
+    .search-mobile form{ padding:.5rem .75rem; }
+    .search-mobile .form-control{ height:44px; border-radius:10px; }
+    .search-mobile .btn{ height:44px; border-radius:10px; }
+    @media (min-width: 992px){
+      .dropdown:hover>.dropdown-menu{ display:block; }
+      .dropdown-submenu{ position:relative; }
+      .dropdown-submenu>.dropdown-menu{ top:0; left:100%; margin-left:.1rem; margin-top:-.25rem; }
+      .dropdown-submenu:hover>.dropdown-menu{ display:block; }
+    }
+    .cu-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:18px; }
+    .cu-card{ background:#fff; border:1px solid #e6e6e6; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05); transition:transform .15s ease, box-shadow .15s ease; }
+    .cu-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.12); }
+    .cu-card__image-wrap{ position:relative; background:#0f2033; aspect-ratio:16/10; display:flex; align-items:center; justify-content:center; }
+    .cu-card__image{ width:100%; height:100%; object-fit:cover; }
+    .cu-card__image--noimg{ color:#fff; opacity:.85; font-weight:600; }
+    .cu-card__ribbon{ position:absolute; top:10px; right:10px; background:#dc3545; color:#fff; padding:.25rem .55rem; border-radius:1rem; font-size:.8rem; font-weight:600; }
+    .cu-card__body{ padding:14px; }
+    .cu-card__title{ font-size:16px; margin-bottom:.4rem; }
+    .cu-card__title a{ color:#111; text-decoration:none; }
+    .cu-card__title a:hover{ text-decoration:underline; }
+    .cu-card__price{ font-weight:700; color:#198754; margin-bottom:.35rem; }
+    .cu-card__meta{ font-size:.9rem; color:#6b7280; display:flex; flex-wrap:wrap; gap:10px; }
+    .cu-card__meta i{ margin-right:4px; color:#a0a0a0; }
+    .bottom-nav{ position:fixed; bottom:0; left:0; width:100%; background:#1B4332; color:#fff; display:flex; justify-content:space-around; align-items:center; padding:10px 0 calc(10px + var(--safe-area-inset-bottom)); min-height:var(--bottom-nav-height); z-index:1030; box-shadow:0 -8px 20px rgba(0,0,0,.1); }
+    .bottom-nav a{ color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:12px; }
+    .bottom-nav i{ font-size:18px; }
+    @media (min-width:992px){ .bottom-nav{ display:none; } }
+    @media (max-width:991.98px){ main{ padding-bottom:calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom) + 240px)!important; } footer{ padding-bottom:calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom) + 150px); } }
+    .collapse { transition: height 0.3s ease; }
+  </style>
+</head>
+
+<body>
+
+<!-- ======= Top Header ======= -->
+<header class="bg-white border-bottom sticky-top">
+  <div class="container-xxl navbar-marketplace d-flex align-items-center justify-content-between">
+
+    <!-- left: burger (mobile only) + logo -->
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-outline-dark d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCategories" aria-label="Open menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <a href="{% url 'index' %}" class="navbar-brand logo-text text-dark mb-0">MarketPlace</a>
+
+      <div class="dropdown d-none d-lg-block">
+        <button class="btn btn-outline-dark" data-bs-toggle="dropdown" aria-label="Categories">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <ul class="dropdown-menu">
+          {% for cat in menu_categories %}
+            <li class="dropdown-submenu dropend">
+              <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ cat.name }}</a>
+              {% if cat.subcategories.all %}
+                <ul class="dropdown-menu">
+                  {% for sub in cat.subcategories.all %}
+                    <li><a class="dropdown-item" href="{% url 'category_detail' sub.slug %}">{{ sub.name }}</a></li>
+                  {% endfor %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'category_detail' cat.slug %}">View all in {{ cat.name }}</a></li>
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- center: search (desktop only) -->
+    <form class="search-box d-none d-lg-flex flex-grow-1 mx-3" method="get" action="{% url 'search_results' %}">
+      <input class="form-control form-control-lg me-2" name="q" type="search" placeholder="Search listings..." value="{{ request.GET.q }}">
+      <button class="btn btn-primary btn-lg px-4" type="submit">Search</button>
+    </form>
+
+    <!-- right: actions (desktop) -->
+    <div class="d-none d-lg-flex align-items-center gap-2">
+      <a href="{% url 'create_listing' %}" class="btn btn-success">Post Ad</a>
+      <a href="{% url 'help_page' %}" class="btn btn-outline-secondary"><i class="fa-regular fa-circle-question me-1"></i>Help</a>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'my_account' %}" class="btn btn-outline-dark">Account</a>
+        <a href="{% url 'account_logout' %}" class="btn btn-outline-secondary">Logout</a>
+      {% else %}
+        <a href="{% url 'account_login' %}" class="btn btn-outline-dark">Login</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="search-mobile d-lg-none">
+    <form class="d-flex" method="get" action="{% url 'search_results' %}">
+      <input class="form-control me-2" name="q" type="search" placeholder="Search listings..." value="{{ request.GET.q }}">
+      <button class="btn btn-primary px-3" type="submit">Search</button>
+    </form>
+  </div>
+</header>
+
+<!-- ======= Offcanvas Categories (mobile/tablet) ======= -->
+<div class="offcanvas offcanvas-start" id="offcanvasCategories">
+  <div class="offcanvas-header">
+    <h5>Categories</h5>
+    <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="mb-3">
+      {% if user.is_authenticated %}
+        <a href="{% url 'my_account' %}" class="btn btn-outline-dark w-100 mb-2">My Account</a>
+      {% else %}
+        <a href="{% url 'account_login' %}" class="btn btn-dark w-100 mb-2">Login</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-outline-dark w-100">Sign Up</a>
+      {% endif %}
+    </div>
+    <hr>
+
+    <ul class="list-group" id="catAccordion">
+      {% for cat in menu_categories %}
+        <li class="list-group-item border-0 px-0">
+          <button class="w-100 d-flex justify-content-between align-items-center btn btn-link text-start text-decoration-none text-dark px-0"
+                  data-bs-toggle="collapse" data-bs-target="#subcat-{{ cat.id }}">
+            <span>{{ cat.name }}</span>
+            <i class="fas fa-chevron-down small"></i>
+          </button>
+          {% if cat.subcategories.all %}
+            <ul id="subcat-{{ cat.id }}" class="collapse ps-3 pt-1" data-bs-parent="#catAccordion">
+              {% for sub in cat.subcategories.all %}
+                <li class="py-1">
+                  <a class="d-block text-decoration-none text-muted" href="{% url 'category_detail' sub.slug %}">{{ sub.name }}</a>
+                </li>
+              {% endfor %}
+              <li class="pt-2">
+                <a class="d-block text-decoration-none" href="{% url 'category_detail' cat.slug %}">View all in {{ cat.name }}</a>
+              </li>
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+
+    <hr>
+
+    <div class="mt-3">
+      <a href="{% url 'info_page' %}" class="btn btn-outline-dark w-100 mb-2"><i class="fa-solid fa-circle-info me-1"></i> About Us</a>
+      <a href="{% url 'contact_page' %}" class="btn btn-outline-dark w-100"><i class="fa-solid fa-envelope me-1"></i> Contact</a>
+    </div>
+  </div>
+</div>
+
+<!-- ======= Messages + Main content ======= -->
+{% if messages %}
+  <div class="container-xxl mt-3">
+    {% for msg in messages %}
+      <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<main class="container my-4">
+  {% block content %}
+  <!-- Page content will be injected here -->
+  {% endblock %}
+</main>
+
+<!-- ======= Footer ======= -->
+<footer class="bg-light border-top text-center mt-5 py-5">
+  <div class="container">
+    <p class="mb-3">&copy; {{ now|date:"Y" }} MarketPlace. All rights reserved.</p>
+    <div>
+      <a href="{% url 'help_page' %}" class="text-decoration-none me-2">Help</a> |
+      <a href="{% url 'info_page' %}" class="text-decoration-none mx-2">Contact</a> |
+      <a href="#" class="text-decoration-none ms-2">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ======= Bottom nav (mobile) ======= -->
+<nav class="bottom-nav d-lg-none">
+  <a href="{% url 'index' %}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="{% url 'nearby_listings' %}"><i class="fa-solid fa-location-dot"></i><span>Near</span></a>
+  <a href="{% url 'create_listing' %}"><i class="fa-solid fa-plus-circle"></i><span>Post</span></a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'my_account' %}"><i class="fa-solid fa-user"></i><span>Account</span></a>
+  {% else %}
+    <a href="{% url 'account_login' %}"><i class="fa-solid fa-user"></i><span>Login</span></a>
+  {% endif %}
+  <a href="{% url 'help_page' %}"><i class="fa-regular fa-circle-question"></i><span>Help</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('shown.bs.collapse', e=>{
+    const i = e.target.previousElementSibling?.querySelector('i.fas');
+    if(i) i.classList.add('rotate-180');
+  });
+  document.addEventListener('hidden.bs.collapse', e=>{
+    const i = e.target.previousElementSibling?.querySelector('i.fas');
+    if(i) i.classList.remove('rotate-180');
+  });
+  document.querySelectorAll('.dropdown-submenu > a').forEach(a=>{
+    a.addEventListener('focus', e=>{
+      if (window.matchMedia('(min-width: 992px)').matches) {
+        a.parentElement.classList.add('show');
+        const menu = a.nextElementSibling;
+        if (menu && menu.classList.contains('dropdown-menu')) menu.classList.add('show');
+      }
+    });
+    a.addEventListener('blur', e=>{
+      if (window.matchMedia('(min-width: 992px)').matches) {
+        a.parentElement.classList.remove('show');
+        const menu = a.nextElementSibling;
+        if (menu && menu.classList.contains('dropdown-menu')) menu.classList.remove('show');
+      }
+    });
+  });
+
+  document.addEventListener('show.bs.collapse', e=>{
+    const icon = e.target.previousElementSibling?.querySelector('i.fa-chevron-down');
+    if(icon) icon.style.transform = 'rotate(180deg)';
+  });
+  document.addEventListener('hide.bs.collapse', e=>{
+    const icon = e.target.previousElementSibling?.querySelector('i.fa-chevron-down');
+    if(icon) icon.style.transform = 'rotate(0deg)';
+  });
+</script>
+<script>
+(function () {
+  const hasLocation =
+    document.cookie.includes('cu_city=') ||
+    document.cookie.includes('cu_province=');
+
+  if (hasLocation || !navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    try {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      const r = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+      );
+      const data = await r.json();
+
+      const city =
+        data.address.city ||
+        data.address.town ||
+        data.address.village ||
+        '';
+
+      const province =
+        data.address.state ||
+        data.address.province ||
+        '';
+
+      if (!city && !province) return;
+
+      document.cookie = `cu_city=${encodeURIComponent(city)}; path=/; max-age=2592000`;
+      document.cookie = `cu_province=${encodeURIComponent(province)}; path=/; max-age=2592000`;
+
+      location.reload();
+    } catch (e) {
+      console.warn('Location detect failed');
+    }
+  });
+})();
+</script>
+</body>
+</html>

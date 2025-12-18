@@ -1,0 +1,88 @@
+{% extends 'board/base.html' %}
+{% block title %}Listings Near You — MarketPlace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h3 class="mb-2 mb-lg-0">Listings near {{ location_label }}</h3>
+
+    <form class="d-flex gap-2" method="get">
+      <input type="text" name="city" class="form-control" placeholder="City" value="{{ city }}">
+      <input type="text" name="province" class="form-control" placeholder="Province" value="{{ province }}">
+      {% if used_geo_radius %}
+        <input type="number" min="1" name="radius_km" class="form-control" value="{{ radius_km }}">
+      {% endif %}
+      <button class="btn btn-outline-primary" type="submit">Update</button>
+      <a class="btn btn-outline-secondary" href="{% url 'nearby_listings' %}">Reset</a>
+    </form>
+  </div>
+
+  <div class="alert alert-info d-flex justify-content-between align-items-center">
+    <div>
+      {% if city or province %}
+        Using location from your browser/cookies.
+      {% else %}
+        We couldn’t detect your city. Enter it above or click “Detect”.
+      {% endif %}
+      {% if used_geo_radius %} Radius: {{ radius_km }} km.{% endif %}
+    </div>
+    <button id="detectBtn" class="btn btn-sm btn-primary">Detect</button>
+  </div>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+    {% for item in listings %}
+      <div class="col">
+        <a href="{% url 'listing_detail' item.id %}" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm position-relative">
+            {% if item.label %}
+              <span class="badge bg-danger position-absolute top-0 end-0 m-2">{{ item.get_label_display }}</span>
+            {% endif %}
+            {% if item.image %}
+              <img src="{{ item.image.url }}" class="card-img-top" style="height:180px; object-fit:cover;">
+            {% else %}
+              <div class="card-img-top bg-secondary text-white text-center py-5">No Image</div>
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title mb-1">{{ item.title }}</h5>
+              <div class="small text-muted mb-1">{{ item.city }}, {{ item.province }}</div>
+              <div class="small text-muted mb-1">
+                <strong>By:</strong>
+                <a href="{% url 'user_profile' item.owner.username %}" class="text-decoration-none">
+                  {{ item.owner.username }}
+                </a>
+              </div>
+              <div class="small text-muted mb-1">Posted: {{ item.created_at|date:"M d, Y" }}</div>
+              <div class="fw-bold">${{ item.price }}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-light border">No listings found near {{ location_label }}.</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Ask browser for geolocation, reverse via Nominatim, store via /set-location, then reload /nearby
+  document.getElementById('detectBtn')?.addEventListener('click', function(){
+    if (!navigator.geolocation) { alert('Geolocation is not supported.'); return; }
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const data = await r.json();
+        const city = data.address.city || data.address.town || data.address.village || '';
+        const province = data.address.state || data.address.province || '';
+        const next = encodeURIComponent("{% url 'nearby_listings' %}");
+        const url = `/set-location?city=${encodeURIComponent(city)}&province=${encodeURIComponent(province)}&lat=${lat}&lon=${lon}&next=${next}`;
+        window.location.href = url;
+      } catch(e) {
+        alert('Could not detect city. Please enter it manually.');
+      }
+    }, () => alert('Permission denied.'));
+  });
+</script>
+{% endblock %}

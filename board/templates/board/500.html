@@ -1,0 +1,12 @@
+{% extends "board/base.html" %}
+
+{% block title %}500 Server Error{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-1 text-danger">500</h1>
+    <h2>Внутренняя ошибка сервера</h2>
+    <p class="lead">Что-то пошло не так на нашей стороне. Мы уже работаем над устранением проблемы.</p>
+    <a href="{% url 'index' %}" class="btn btn-primary mt-3">Попробовать снова</a>
+</div>
+{% endblock %}

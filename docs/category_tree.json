@@ -1,0 +1,232 @@
+[
+  {
+    "name": "Smartphones",
+    "slug": "smartphones",
+    "subcategories": []
+  },
+  {
+    "name": "Laptops",
+    "slug": "laptops",
+    "subcategories": []
+  },
+  {
+    "name": "Tablets",
+    "slug": "tablets",
+    "subcategories": []
+  },
+  {
+    "name": "Accessories",
+    "slug": "accessories",
+    "subcategories": []
+  },
+  {
+    "name": "Cameras",
+    "slug": "cameras",
+    "subcategories": []
+  },
+  {
+    "name": "Cars",
+    "slug": "cars",
+    "subcategories": []
+  },
+  {
+    "name": "Motorcycles",
+    "slug": "motorcycles",
+    "subcategories": []
+  },
+  {
+    "name": "Auto Parts",
+    "slug": "auto-parts",
+    "subcategories": []
+  },
+  {
+    "name": "Trucks",
+    "slug": "trucks",
+    "subcategories": []
+  },
+  {
+    "name": "Rent",
+    "slug": "rent",
+    "subcategories": []
+  },
+  {
+    "name": "Apartments for Rent",
+    "slug": "apartments-for-rent",
+    "subcategories": []
+  },
+  {
+    "name": "Houses for Sale",
+    "slug": "houses-for-sale",
+    "subcategories": []
+  },
+  {
+    "name": "Land",
+    "slug": "land",
+    "subcategories": []
+  },
+  {
+    "name": "Commercial",
+    "slug": "commercial",
+    "subcategories": []
+  },
+  {
+    "name": "Short-Term",
+    "slug": "short-term",
+    "subcategories": []
+  },
+  {
+    "name": "Furniture",
+    "slug": "furniture",
+    "subcategories": []
+  },
+  {
+    "name": "Kitchen",
+    "slug": "kitchen",
+    "subcategories": []
+  },
+  {
+    "name": "Lighting",
+    "slug": "lighting",
+    "subcategories": []
+  },
+  {
+    "name": "Garden Tools",
+    "slug": "garden-tools",
+    "subcategories": []
+  },
+  {
+    "name": "Decor",
+    "slug": "decor",
+    "subcategories": []
+  },
+  {
+    "name": "Men’s",
+    "slug": "mens",
+    "subcategories": []
+  },
+  {
+    "name": "Women’s",
+    "slug": "womens",
+    "subcategories": []
+  },
+  {
+    "name": "Shoes",
+    "slug": "shoes",
+    "subcategories": []
+  },
+  {
+    "name": "Bags",
+    "slug": "bags",
+    "subcategories": []
+  },
+  {
+    "name": "Jewelry",
+    "slug": "jewelry",
+    "subcategories": []
+  },
+  {
+    "name": "IT",
+    "slug": "it",
+    "subcategories": []
+  },
+  {
+    "name": "Sales",
+    "slug": "sales",
+    "subcategories": []
+  },
+  {
+    "name": "Design",
+    "slug": "design",
+    "subcategories": []
+  },
+  {
+    "name": "Education",
+    "slug": "education",
+    "subcategories": []
+  },
+  {
+    "name": "Remote",
+    "slug": "remote",
+    "subcategories": []
+  },
+  {
+    "name": "Repair",
+    "slug": "repair",
+    "subcategories": []
+  },
+  {
+    "name": "Cleaning",
+    "slug": "cleaning",
+    "subcategories": []
+  },
+  {
+    "name": "Moving",
+    "slug": "moving",
+    "subcategories": []
+  },
+  {
+    "name": "Freelance",
+    "slug": "freelance",
+    "subcategories": []
+  },
+  {
+    "name": "Tutoring",
+    "slug": "tutoring",
+    "subcategories": []
+  },
+  {
+    "name": "Fashion",
+    "slug": "fashion",
+    "subcategories": []
+  },
+  {
+    "name": "Vehicles & Transportation",
+    "slug": "vehicles-and-transportation",
+    "subcategories": []
+  },
+  {
+    "name": "Cars & Trucks",
+    "slug": "cars-and-trucks",
+    "subcategories": []
+  },
+  {
+    "name": "Boats & Watercraft",
+    "slug": "boats-and-watercraft",
+    "subcategories": []
+  },
+  {
+    "name": "RVs & Campers",
+    "slug": "rvs-and-campers",
+    "subcategories": []
+  },
+  {
+    "name": "ATVs & Snowmobiles",
+    "slug": "atvs-and-snowmobiles",
+    "subcategories": []
+  },
+  {
+    "name": "Vehicle Parts & Accessories",
+    "slug": "vehicle-parts-and-accessories",
+    "subcategories": []
+  },
+  {
+    "name": "Bicycles",
+    "slug": "bicycles",
+    "subcategories": []
+  },
+  {
+    "name": "Business Opportunities",
+    "slug": "business-opportunities",
+    "subcategories": []
+  },
+  {
+    "name": "Professional Services",
+    "slug": "professional-services",
+    "subcategories": []
+  },
+  {
+    "name": "Lessons & Tutoring",
+    "slug": "lessons-and-tutoring",
+    "subcategories": []
+  }
+]

@@ -1,0 +1,35 @@
+{% extends 'board/base.html' %}
+{% block title %}About Us — MarketPlace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row g-3">
+    <div class="col-12 col-lg-8">
+      <div class="cu-card p-4">
+        <h2 class="mb-3">About MarketPlace</h2>
+        <p class="text-muted mb-3">
+          MarketPlace is a clean Django marketplace template. It includes categories, listings with photos, user reviews, and
+          email-based authentication via django-allauth. The UI is responsive and uses unified <code>cu-card</code> styles.
+        </p>
+        <ul class="mb-0">
+          <li>Listings: create, edit, search, filters</li>
+          <li>Images gallery for ads</li>
+          <li>User profiles, ratings, comments</li>
+          <li>Ready to deploy (Render/Heroku notes in README)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="cu-card p-4 h-100">
+        <h5 class="mb-2">Highlights</h5>
+        <ul class="small mb-0">
+          <li>Django 5 + django-allauth</li>
+          <li>Categories & subcategories</li>
+          <li>Adaptive design (mobile first)</li>
+          <li>Demo fixtures included</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
