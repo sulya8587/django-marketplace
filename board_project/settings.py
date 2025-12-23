@@ -127,7 +127,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ======================================================
-# Authentication / django-allauth (NEW API)
+# Authentication / django-allauth (PRODUCTION SAFE)
 # ======================================================
 
 AUTHENTICATION_BACKENDS = (
@@ -140,25 +140,29 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_LOGOUT_ON_GET = True
 
-# --- IMPORTANT PART ---
-# Login ONLY via email + password
+# Login via email only
 ACCOUNT_LOGIN_METHODS = {"email"}
 
-# Disable passwordless login (email code)
+# Disable passwordless login
 ACCOUNT_LOGIN_BY_CODE_ENABLED = False
 
-# Signup fields (password fields are added automatically)
+# Signup fields (ALL required fields must be listed)
 ACCOUNT_SIGNUP_FIELDS = [
+    "email*",
+    "username*",
+    "password1*",
+    "password2*",
     "first_name",
     "last_name",
-    "email",
-    
 ]
+
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = True
 
 # Email verification
 ACCOUNT_EMAIL_VERIFICATION = "none" if (DEBUG or DJANGO_DEMO) else "mandatory"
 
-# Custom signup form (optional)
+# Optional custom signup form
 ACCOUNT_FORMS = {
     "signup": "board.forms.AllAuthSignupForm",
 }
