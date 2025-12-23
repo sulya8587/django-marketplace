@@ -195,3 +195,47 @@ Media uploads are supported
 📜 License
 This project is provided as a marketplace template.
 You are free to customize, extend, and use it in commercial projects.
+
+🚀 Deployment on Render
+1️⃣ Create a new Render Web Service
+
+Go to https://render.com
+ → New + → Web Service
+
+Connect your own fork or GitHub repository of this project
+
+2️⃣ Configure environment
+Environment: Python 3
+Build Command:
+./build.sh
+
+Start Command:
+gunicorn django_marketplace.wsgi:application
+
+
+| Name                                      | Example                               | Required |
+| ----------------------------------------- | ------------------------------------- | -------- |
+| `SECRET_KEY`                              | `django-insecure-xyz123`              | ✅        |
+| `DATABASE_URL`                            | `postgresql://user:pass@host:port/db` | ✅        |
+| `DEBUG`                                   | `False`                               | ✅        |
+| `ALLOWED_HOSTS`                           | `.onrender.com`                       | ✅        |
+| `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | (optional)                            | ⚙️       |
+
+
+3️⃣ Production settings (settings.py)
+CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+WhiteNoise and Gunicorn are already included for static files and WSGI serving.
+
+
+4️⃣ After deployment
+
+Check /admin/ loads via HTTPS
+
+Register a test user and verify email confirmation
+
+Ensure static files and images load correctly
+
+Add demo data and screenshots for Codester
