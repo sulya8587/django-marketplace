@@ -10,14 +10,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ======================================================
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "demo-secret-key")
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Demo mode switch (used on marketplaces / previews)
 DJANGO_DEMO = os.environ.get("DJANGO_DEMO", "").lower() in ("1", "true", "yes")
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,.onrender.com"
+    "127.0.0.1,localhost,.onrender.com,.render.com"
 ).split(",")
 
 # ======================================================
@@ -101,7 +101,11 @@ DATABASE_URL = os.environ.get(
 )
 
 DATABASES = {
-    "default": dj_database_url.parse(DATABASE_URL)
+    "default": dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=not DEBUG
+    )
 }
 
 # ======================================================
@@ -109,7 +113,10 @@ DATABASES = {
 # ======================================================
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+] if (BASE_DIR / "static").exists() else []
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -145,8 +152,7 @@ ACCOUNT_SIGNUP_FIELDS = [
     "first_name",
     "last_name",
     "email",
-    "password1",
-    "password2",
+    
 ]
 
 # Email verification
@@ -214,3 +220,13 @@ LOGGING = {
         },
     },
 }
+# ======================================================
+# Security (Render / Production)
+# ======================================================
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
