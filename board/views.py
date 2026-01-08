@@ -9,21 +9,20 @@ from django.http import HttpResponseForbidden, HttpResponse
 from django.conf import settings
 from math import radians, sin, cos, asin, sqrt
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.contrib.auth import get_user_model # Оставить
-from django import forms # <--- ВОТ ЭТА СТРОКА ДОБАВЛЕНА
+from django.contrib.auth import get_user_model, logout
+from django import forms 
 from allauth.account.views import LoginView as AllAuthLoginView
 from allauth.account.forms import LoginForm
 from .category_icons import CATEGORY_ICONS
 from .models import (
-    Listing, Category, UserProfile, ListingImage, Favorite,
-    ListingReview, ListingComment,  # (ListingReview сейчас не используем, но пусть останется)
-    Review, SiteReview,                       # <-- ДОБАВЛЕНО: отзывы о продавце (профиль)
+    Listing, Category, UserProfile, ListingImage, Favorite,Review, SiteReview,
+    ListingReview, ListingComment,  
     PROVINCE_CHOICES, LISTING_TYPE_CHOICES, CONDITION_CHOICES, SELLER_TYPE_CHOICES
 )
 
 # ФОРМЫ
-from .forms import (ListingForm, ListingImageForm, ListingReviewForm, ListingCommentForm,   # (ListingReviewForm можно не использовать)
-    ReviewForm, SiteReviewForm,                              # <-- ДОБАВЛЕНО: форма отзыва о продавце (профиль)
+from .forms import (ListingForm, ListingImageForm, ListingReviewForm, ListingCommentForm, 
+    ReviewForm, SiteReviewForm,                             
 )
 
 
@@ -470,33 +469,25 @@ def toggle_favorite(request, listing_id):
 
 @login_required
 def my_account(request):
-    """Личный кабинет: сохраняем seller_type + остальное."""
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
+    # --- UPDATE PROFILE ---
     if request.method == 'POST':
         profile.phone = request.POST.get('phone', '').strip()
         profile.show_phone = 'show_phone' in request.POST
         profile.show_email = 'show_email' in request.POST
-        profile.save()
-
-        messages.success(request, "Contact settings updated.")
-
-        if 'delete_account' in request.POST:
-            messages.success(request, "Your account has been deleted.")
-            request.user.delete()
-            return redirect('index')
-
-        profile.phone = request.POST.get('phone')
-        profile.bio = request.POST.get('bio')
+        profile.bio = request.POST.get('bio', '').strip()
         profile.hide_personal_info = 'hide_personal_info' in request.POST
 
-        # сохраняем тип продавца, если пришёл валидный
+        # seller type 
         seller_type = request.POST.get('seller_type')
-        if seller_type in dict(SELLER_TYPE_CHOICES).keys():
+        if seller_type in dict(SELLER_TYPE_CHOICES):
             profile.seller_type = seller_type
 
+        # avatar
         if 'remove_avatar' in request.POST:
-            profile.avatar.delete(save=False)
+            if profile.avatar:
+                profile.avatar.delete(save=False)
             profile.avatar = None
 
         if request.FILES.get('avatar'):
@@ -504,20 +495,35 @@ def my_account(request):
 
         profile.save()
         messages.success(request, "Profile updated successfully.")
+        return redirect('my_account')
 
-    favorites = Favorite.objects.filter(user=request.user).select_related('listing').order_by('-added_at')
-    saved_listings = [f.listing for f in favorites]
-    my_listings = Listing.objects.filter(owner=request.user).order_by('-created_at')
+    # --- MY LISTINGS ---
+    user_listings = Listing.objects.filter(
+        owner=request.user,
+        is_active=True
+    ).order_by('-created_at')
 
-    return render(request, 'board/my_account.html', {
+    # --- FAVORITES ---
+    favorites = Favorite.objects.filter(user=request.user).select_related('listing')
+    favorite_listings = [f.listing for f in favorites]
+
+    # --- MY REVIEWS ---
+    my_reviews = Review.objects.filter(
+        reviewer=request.user
+    ).select_related('seller').order_by('-created_at')
+
+    context = {
         'profile': profile,
-        'saved_listings': saved_listings,
-        'my_listings': my_listings,
-    })
+        'listings': user_listings,          
+        'saved_listings': favorite_listings,
+        'my_reviews': my_reviews,
+        'page_title': "My Account",
+    }
+
+    return render(request, 'board/my_account.html', context)
 
 
 def search_results(request):
-    """Страница результатов поиска."""
     query = request.GET.get('q', '').strip()
     listings_list = Listing.objects.filter(is_active=True).select_related('owner').order_by('-is_promoted', '-created_at')
 
@@ -642,19 +648,6 @@ def delete_all_listing_images(request, listing_id):
 
     return redirect('edit_listing', listing_id=listing.id)
 
-@login_required
-def my_account(request):
-    user_listings = Listing.objects.filter(owner=request.user, is_active=True).order_by('-created_at')
-    favorite_listings = request.user.favorite_listings.all().select_related('owner').order_by('-created_at')
-    my_reviews = Review.objects.filter(reviewer=request.user).select_related('seller').order_by('-created_at')
-
-    context = {
-        'user_listings': user_listings,
-        'favorite_listings': favorite_listings,
-        'my_reviews': my_reviews,
-        'page_title': "My Account"
-    }
-    return render(request, 'board/my_account.html', context)
 
 # --- Comments/Reviews Management ---
 
@@ -693,12 +686,12 @@ def user_reviews(request):
     """Общие отзывы о сайте."""
     reviews_list = SiteReview.objects.filter().select_related('user').order_by('-created_at')
 
-    # Пагинация
+    
     paginator = Paginator(reviews_list, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    # Форма для добавления отзыва
+    
     review_form = SiteReviewForm()
 
     if request.user.is_authenticated and request.method == 'POST':
@@ -719,7 +712,20 @@ def user_reviews(request):
     return render(request, 'board/site_reviews.html', context)
 
 
-# --- Error Handlers (ОБЯЗАТЕЛЬНО ДЛЯ RENDER) ---
+# --- Error Handlers ---
+
+@login_required
+def delete_account_confirm(request):
+    if request.method == "POST":
+        user = request.user
+        logout(request)       
+        user.delete()            
+        messages.success(request, "Your account has been permanently deleted.")
+        return redirect('index')
+
+    return render(request, 'board/delete_account.html', {
+        'page_title': "Delete Account"
+    })
 
 def custom_404(request, exception):
     """Кастомный обработчик 404 (Page Not Found)"""
