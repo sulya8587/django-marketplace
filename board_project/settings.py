@@ -95,10 +95,10 @@ WSGI_APPLICATION = "board_project.wsgi.application"
 # Database
 # ======================================================
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-)
+# DATABASE_URL = os.environ.get(
+#     "DATABASE_URL",
+#     f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+# )
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -149,7 +149,6 @@ ACCOUNT_LOGIN_BY_CODE_ENABLED = False
 # Signup fields (ALL required fields must be listed)
 ACCOUNT_SIGNUP_FIELDS = [
     "email*",
-    "username*",
     "password1*",
     "password2*",
     "first_name",
