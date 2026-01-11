@@ -1,12 +1,54 @@
-{% extends "board/base.html" %}
-
-{% block title %}500 Server Error{% endblock %}
-
-{% block content %}
-<div class="container text-center py-5">
-    <h1 class="display-1 text-danger">500</h1>
-    <h2>Внутренняя ошибка сервера</h2>
-    <p class="lead">Что-то пошло не так на нашей стороне. Мы уже работаем над устранением проблемы.</p>
-    <a href="{% url 'index' %}" class="btn btn-primary mt-3">Попробовать снова</a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Server Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 10vh auto;
+            background: #ffffff;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        }
+        h1 {
+            font-size: 5rem;
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            margin-top: 0;
+            font-weight: 500;
+        }
+        p {
+            color: #6c757d;
+        }
+        a {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #0d6efd;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>500</h1>
+        <h2>Internal Server Error</h2>
+        <p>Something went wrong on our side. Please try again later.</p>
+        <a href="/">Go to homepage</a>
+    </div>
+</body>
+</html>
