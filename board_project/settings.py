@@ -159,7 +159,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 
 # Email verification
-ACCOUNT_EMAIL_VERIFICATION = "none" if (DEBUG or DJANGO_DEMO) else "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none" 
 
 # Optional custom signup form
 ACCOUNT_FORMS = {
