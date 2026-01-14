@@ -1,5 +1,6 @@
 from django import forms
 from allauth.account.forms import SignupForm
+from django.core.exceptions import ValidationError
 from .models import Listing, Category,UserProfile, ListingReview, ListingComment, Review, SiteReview
 from .models import Listing, CONDITION_CHOICES, LISTING_TYPE_CHOICES, LABEL_CHOICES
 from django.contrib.auth import get_user_model
@@ -144,31 +145,64 @@ class SiteReviewForm(forms.ModelForm):
         }
 
 
-# в board/forms.py
-from allauth.account.forms import SignupForm
-from django import forms
-
 class AllAuthSignupForm(SignupForm):
-    first_name = forms.CharField(max_length=30, label="First name", required=True,
-                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}))
-    last_name  = forms.CharField(max_length=30, label="Last name", required=True,
-                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}))
-    phone = forms.CharField(max_length=20, label="Phone (optional)", required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Optional phone number'}))
+    first_name = forms.CharField(
+        max_length=30,
+        label="First name",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'First name'
+        })
+    )
+
+    last_name = forms.CharField(
+        max_length=30,
+        label="Last name",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Last name'
+        })
+    )
+
+    phone = forms.CharField(
+        max_length=20,
+        label="Phone (optional)",
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Optional phone number'
+        })
+    )
+
+    agree = forms.BooleanField(
+        required=True,
+        label="I agree to the Terms & Privacy Policy"
+    )
+
+    def clean_agree(self):
+        if not self.cleaned_data.get("agree"):
+            raise ValidationError("You must agree to the Terms & Privacy Policy.")
+        return True
 
     def save(self, request):
         user = super().save(request)
+
         user.first_name = self.cleaned_data.get('first_name', '')
-        user.last_name  = self.cleaned_data.get('last_name', '')
+        user.last_name = self.cleaned_data.get('last_name', '')
         user.save()
+
+        # attach phone to profile if exists
         try:
             profile = user.profile
         except Exception:
             profile = None
-        if profile is not None:
+
+        if profile:
             phone = self.cleaned_data.get('phone', '')
             if phone:
                 profile.phone = phone
                 profile.save()
-        return user
 
+        return user
