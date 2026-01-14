@@ -1,4 +1,3 @@
-# board_project/settings.py
 from pathlib import Path
 import os
 import dj_database_url
@@ -6,14 +5,11 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ======================================================
-# Core settings
+# Core
 # ======================================================
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "demo-secret-key")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-
-# Demo mode switch (used on marketplaces / previews)
-DJANGO_DEMO = os.environ.get("DJANGO_DEMO", "").lower() in ("1", "true", "yes")
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
@@ -21,7 +17,7 @@ ALLOWED_HOSTS = os.environ.get(
 ).split(",")
 
 # ======================================================
-# Installed applications
+# Applications
 # ======================================================
 
 INSTALLED_APPS = [
@@ -38,7 +34,6 @@ INSTALLED_APPS = [
 
     "widget_tweaks",
 
-    # django-allauth
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -67,6 +62,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "board_project.urls"
+WSGI_APPLICATION = "board_project.wsgi.application"
 
 # ======================================================
 # Templates
@@ -75,12 +71,12 @@ ROOT_URLCONF = "board_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],  
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-                "django.template.context_processors.request",  # required by allauth
+                "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "board.context_processors.menu_categories",
@@ -89,45 +85,38 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "board_project.wsgi.application"
-
 # ======================================================
 # Database
 # ======================================================
 
-# DATABASE_URL = os.environ.get(
-#     "DATABASE_URL",
-#     f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-# )
-
 DATABASES = {
-    'default': dj_database_url.config(
+    "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
 }
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 # ======================================================
-# Static & Media files
+# Static & Media
 # ======================================================
 
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ] if (BASE_DIR / "static").exists() else []
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 # ======================================================
-# Authentication / django-allauth (PRODUCTION SAFE)
+# Authentication / django-allauth
 # ======================================================
 
 AUTHENTICATION_BACKENDS = (
@@ -140,13 +129,10 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_LOGOUT_ON_GET = True
 
-# Login via email only
+# Login only via email
 ACCOUNT_LOGIN_METHODS = {"email"}
-
-# Disable passwordless login
 ACCOUNT_LOGIN_BY_CODE_ENABLED = False
 
-# Signup fields (ALL required fields must be listed)
 ACCOUNT_SIGNUP_FIELDS = [
     "email*",
     "password1*",
@@ -155,40 +141,27 @@ ACCOUNT_SIGNUP_FIELDS = [
     "last_name",
 ]
 
-ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_UNIQUE_EMAIL = True
 
-# Email verification
-ACCOUNT_EMAIL_VERIFICATION = "none" 
+# 🚫 NO EMAIL VERIFICATION (demo / Codester safe)
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = False
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
-# Optional custom signup form
 ACCOUNT_FORMS = {
     "signup": "board.forms.AllAuthSignupForm",
 }
 
 # ======================================================
-# Email configuration
+# Email — FORCE SAFE MODE (CRITICAL)
 # ======================================================
 
-if DEBUG or DJANGO_DEMO:
-    # Console backend for development / demo
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    DEFAULT_FROM_EMAIL = "support@demo.example.com"
-else:
-    # Production SMTP (example: Gmail)
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
-    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
-    EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
-    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-    DEFAULT_FROM_EMAIL = os.environ.get(
-        "DEFAULT_FROM_EMAIL",
-        "support@yourmarketplace.com"
-    )
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "noreply@demo.local"
 
 # ======================================================
-# Social authentication (Google)
+# Social Auth (Google)
 # ======================================================
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -202,7 +175,18 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # ======================================================
-# Logging
+# Security (Render)
+# ======================================================
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+# ======================================================
+# Logging (minimal, safe)
 # ======================================================
 
 LOGGING = {
@@ -212,24 +196,14 @@ LOGGING = {
         "console": {"class": "logging.StreamHandler"},
     },
     "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "ERROR",
+        },
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": True,
         },
-        "django": {
-            "handlers": ["console"],
-            "level": "ERROR",
-        },
     },
 }
-# ======================================================
-# Security (Render / Production)
-# ======================================================
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
-]
-
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = True
