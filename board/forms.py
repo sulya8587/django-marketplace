@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from .models import Listing, Category,UserProfile, ListingReview, ListingComment, Review, SiteReview
 from .models import Listing, CONDITION_CHOICES, LISTING_TYPE_CHOICES, LABEL_CHOICES
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 User = get_user_model()
 
 
@@ -206,3 +207,19 @@ class AllAuthSignupForm(SignupForm):
                 profile.save()
 
         return user
+
+class EditProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
+
+    class Meta:
+        model = UserProfile
+        fields = ('phone', 'show_phone', 'show_email')
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            self.fields['first_name'].initial = user.first_name
+            self.fields['last_name'].initial = user.last_name

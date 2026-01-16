@@ -22,7 +22,7 @@ from .models import (
 
 # ФОРМЫ
 from .forms import (ListingForm, ListingImageForm, ListingReviewForm, ListingCommentForm, 
-    ReviewForm, SiteReviewForm,                             
+    ReviewForm, SiteReviewForm, EditProfileForm,                           
 )
 
 
@@ -521,6 +521,7 @@ def my_account(request):
     }
 
     return render(request, 'board/my_account.html', context)
+
 
 
 def search_results(request):

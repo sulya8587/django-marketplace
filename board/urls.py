@@ -48,5 +48,6 @@ urlpatterns = [
     path('contact/', views.contact_page, name='contact_page'),
     path('terms/', TemplateView.as_view(template_name='board/terms.html'), name='terms'),
     path('account/delete/',views.delete_account_confirm,name='delete_account'),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
 
 ]
