@@ -1,10 +1,11 @@
 {% extends 'board/base.html' %}
 {% load static %}
-{% block title %}My Account - MarketPlace{% endblock %}
+{% block title %}My Account{% endblock %}
 
 {% block content %}
-<div class="container-xxl py-4 my-account-page">
-  <div class="row g-4 mb-5 align-items-start">
+<div class="container-xxl py-4">
+
+  <div class="row g-4 mb-5">
 
     <!-- PROFILE CARD -->
     <div class="col-md-4">
@@ -13,27 +14,39 @@
 
           <!-- Avatar -->
           <div class="mb-3">
-            {% if user.profile.avatar %}
-              <img src="{{ user.profile.avatar.url }}"
+            {% if profile.avatar %}
+              <img src="{{ profile.avatar.url }}"
                    class="rounded-circle"
                    width="96" height="96"
                    style="object-fit:cover;">
             {% else %}
-              <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto"
+              <div class="rounded-circle bg-secondary text-white
+                          d-flex align-items-center justify-content-center mx-auto"
                    style="width:96px;height:96px;font-size:38px;">
                 {{ user.username|first|upper }}
               </div>
             {% endif %}
           </div>
 
-          <h3 class="h5 mb-1">{{ user.username }}</h3>
+          <!-- Name + Edit icon -->
+          <h3 class="h5 mb-1 d-flex justify-content-center align-items-center gap-2">
+            {{ user.get_full_name|default:user.username }}
+            <button type="button"
+                    id="editProfileToggle"
+                    class="btn btn-sm btn-outline-secondary p-1"
+                    title="Edit profile"
+                    style="line-height:1;">
+              ✏️
+            </button>
+          </h3>
+
           <p class="text-muted small mb-2">
-            Joined {{ user.date_joined|date:"F Y" }}
+            @{{ user.username }} · Joined {{ user.date_joined|date:"F Y" }}
           </p>
 
-          {% if user.profile.seller_type %}
+          {% if profile.seller_type %}
             <span class="badge bg-primary mb-3">
-              {{ user.profile.get_seller_type_display }}
+              {{ profile.get_seller_type_display }}
             </span>
           {% endif %}
 
@@ -41,54 +54,84 @@
           <form method="post" class="text-start mt-4">
             {% csrf_token %}
 
-            <h6 class="mb-2">Profile info</h6>
+            <h6 class="text-muted text-uppercase small mb-2">
+              Profile info
+            </h6>
 
+            <!-- Username (always readonly) -->
             <div class="mb-2">
               <label class="form-label small">Username</label>
-              <input type="text" name="username" class="form-control form-control-sm"
-                     value="{{ user.username }}">
+              <input type="text"
+                     class="form-control form-control-sm"
+                     value="{{ user.username }}"
+                     readonly>
             </div>
 
+            <!-- First name -->
             <div class="mb-2">
               <label class="form-label small">First name</label>
-              <input type="text" name="first_name" class="form-control form-control-sm"
-                     value="{{ user.first_name }}">
+              <input type="text"
+                     name="first_name"
+                     class="form-control form-control-sm profile-input"
+                     value="{{ user.first_name }}"
+                     readonly>
             </div>
 
+            <!-- Last name -->
             <div class="mb-3">
               <label class="form-label small">Last name</label>
-              <input type="text" name="last_name" class="form-control form-control-sm"
-                     value="{{ user.last_name }}">
+              <input type="text"
+                     name="last_name"
+                     class="form-control form-control-sm profile-input"
+                     value="{{ user.last_name }}"
+                     readonly>
             </div>
 
-            <h6 class="mb-2">Contact settings</h6>
+            <h6 class="text-muted text-uppercase small mb-2">
+              Contact settings
+            </h6>
 
+            <!-- Phone -->
             <div class="mb-2">
-              <input type="text" name="phone"
-                     class="form-control form-control-sm"
-                     value="{{ user.profile.phone }}"
-                     placeholder="+1 234 567 890">
+              <input type="text"
+                     name="phone"
+                     class="form-control form-control-sm profile-input"
+                     placeholder="+1 234 567 890"
+                     value="{{ profile.phone }}"
+                     readonly>
             </div>
 
+            <!-- Show phone -->
             <div class="form-check mb-1">
-              <input class="form-check-input" type="checkbox"
-                     name="show_phone" {% if user.profile.show_phone %}checked{% endif %}>
+              <input class="form-check-input profile-checkbox"
+                     type="checkbox"
+                     name="show_phone"
+                     {% if profile.show_phone %}checked{% endif %}
+                     disabled>
               <label class="form-check-label small">
                 Show phone to buyers
               </label>
             </div>
 
+            <!-- Show email -->
             <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox"
-                     name="show_email" {% if user.profile.show_email %}checked{% endif %}>
+              <input class="form-check-input profile-checkbox"
+                     type="checkbox"
+                     name="show_email"
+                     {% if profile.show_email %}checked{% endif %}
+                     disabled>
               <label class="form-check-label small">
                 Show email to buyers
               </label>
             </div>
 
-            <button class="btn btn-outline-primary btn-sm w-100">
-              Save profile
-            </button>
+            <!-- Save button (hidden until edit) -->
+            <div id="profileActions" class="d-none">
+              <button class="btn btn-primary btn-sm w-100">
+                Save profile
+              </button>
+            </div>
+
           </form>
 
           <div class="d-grid gap-2 mt-3">
@@ -112,6 +155,7 @@
       <article class="cu-card">
         <div class="cu-card__body">
           <h2 class="h5 mb-3">Account overview</h2>
+
           <div class="row g-3 text-center">
             <div class="col-4">
               <div class="fw-bold fs-4">{{ listings|length }}</div>
@@ -123,7 +167,7 @@
             </div>
             <div class="col-4">
               <div class="fw-bold fs-4">
-                {{ user.profile.rating|default:"5.0" }}
+                {{ profile.rating|default:"5.0" }}
               </div>
               <div class="small text-muted">Rating</div>
             </div>
@@ -180,6 +224,7 @@
                    class="btn btn-outline-dark btn-sm">
                   Edit
                 </a>
+
                 <form method="post" action="{% url 'delete_listing' item.id %}">
                   {% csrf_token %}
                   <button class="btn btn-outline-danger btn-sm"
@@ -194,9 +239,27 @@
         {% endfor %}
       </div>
     {% else %}
-      <p class="text-muted small">You haven't created any listings yet.</p>
+      <p class="text-muted small">
+        You haven't created any listings yet.
+      </p>
     {% endif %}
   </section>
 
 </div>
+
+<!-- INLINE EDIT SCRIPT -->
+<script>
+  const toggleBtn = document.getElementById('editProfileToggle');
+  const inputs = document.querySelectorAll('.profile-input');
+  const checkboxes = document.querySelectorAll('.profile-checkbox');
+  const actions = document.getElementById('profileActions');
+
+  toggleBtn.addEventListener('click', function () {
+    inputs.forEach(input => input.removeAttribute('readonly'));
+    checkboxes.forEach(cb => cb.removeAttribute('disabled'));
+    actions.classList.remove('d-none');
+    toggleBtn.classList.add('d-none');
+  });
+</script>
+
 {% endblock %}
