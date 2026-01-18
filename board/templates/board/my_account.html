@@ -1,9 +1,26 @@
 {% extends 'board/base.html' %}
 {% load static %}
+
 {% block title %}My Account{% endblock %}
 
 {% block content %}
-<div class="container-xxl py-4">
+<div class="container-xxl py-4 my-account-page">
+
+  <!-- TOASTS -->
+  {% if messages %}
+    <div class="position-fixed top-0 end-0 p-3" style="z-index:1055">
+      {% for message in messages %}
+        <div class="toast align-items-center text-bg-success border-0 show mb-2">
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"></button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <div class="row g-4 mb-5">
 
@@ -14,136 +31,75 @@
 
           <!-- Avatar -->
           <div class="mb-3">
-            {% if profile.avatar %}
-              <img src="{{ profile.avatar.url }}"
-                   class="rounded-circle"
-                   width="96" height="96"
-                   style="object-fit:cover;">
+            {% if user.profile.avatar %}
+              <img src="{{ user.profile.avatar.url }}" class="rounded-circle"
+                   width="96" height="96" style="object-fit:cover;">
             {% else %}
-              <div class="rounded-circle bg-secondary text-white
-                          d-flex align-items-center justify-content-center mx-auto"
+              <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto"
                    style="width:96px;height:96px;font-size:38px;">
                 {{ user.username|first|upper }}
               </div>
             {% endif %}
           </div>
 
-          <!-- Name + Edit icon -->
-          <h3 class="h5 mb-1 d-flex justify-content-center align-items-center gap-2">
-            {{ user.get_full_name|default:user.username }}
-            <button type="button"
-                    id="editProfileToggle"
-                    class="btn btn-sm btn-outline-secondary p-1"
-                    title="Edit profile"
-                    style="line-height:1;">
-              ✏️
-            </button>
-          </h3>
-
-          <p class="text-muted small mb-2">
-            @{{ user.username }} · Joined {{ user.date_joined|date:"F Y" }}
-          </p>
-
-          {% if profile.seller_type %}
-            <span class="badge bg-primary mb-3">
-              {{ profile.get_seller_type_display }}
-            </span>
-          {% endif %}
-
-          <!-- PROFILE FORM -->
-          <form method="post" class="text-start mt-4">
+          <!-- NAME + EDIT ICON -->
+          <form method="post" class="text-start">
             {% csrf_token %}
 
-            <h6 class="text-muted text-uppercase small mb-2">
-              Profile info
-            </h6>
-
-            <!-- Username (always readonly) -->
-            <div class="mb-2">
-              <label class="form-label small">Username</label>
-              <input type="text"
-                     class="form-control form-control-sm"
-                     value="{{ user.username }}"
-                     readonly>
-            </div>
-
-            <!-- First name -->
-            <div class="mb-2">
-              <label class="form-label small">First name</label>
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
               <input type="text"
                      name="first_name"
-                     class="form-control form-control-sm profile-input"
                      value="{{ user.first_name }}"
-                     readonly>
-            </div>
+                     class="form-control form-control-sm text-center fw-semibold"
+                     placeholder="First name"
+                     style="max-width:130px;">
 
-            <!-- Last name -->
-            <div class="mb-3">
-              <label class="form-label small">Last name</label>
               <input type="text"
                      name="last_name"
-                     class="form-control form-control-sm profile-input"
                      value="{{ user.last_name }}"
-                     readonly>
+                     class="form-control form-control-sm text-center fw-semibold"
+                     placeholder="Last name"
+                     style="max-width:130px;">
             </div>
 
-            <h6 class="text-muted text-uppercase small mb-2">
-              Contact settings
-            </h6>
+            <p class="text-muted small mb-2">
+              @{{ user.username }} · Joined {{ user.date_joined|date:"F Y" }}
+            </p>
 
-            <!-- Phone -->
-            <div class="mb-2">
+            <!-- CONTACT -->
+            <div class="mb-2 text-start">
+              <label class="form-label small">Phone</label>
               <input type="text"
                      name="phone"
-                     class="form-control form-control-sm profile-input"
-                     placeholder="+1 234 567 890"
-                     value="{{ profile.phone }}"
-                     readonly>
+                     value="{{ user.profile.phone }}"
+                     class="form-control form-control-sm">
             </div>
 
-            <!-- Show phone -->
-            <div class="form-check mb-1">
-              <input class="form-check-input profile-checkbox"
-                     type="checkbox"
-                     name="show_phone"
-                     {% if profile.show_phone %}checked{% endif %}
-                     disabled>
-              <label class="form-check-label small">
-                Show phone to buyers
-              </label>
+            <div class="form-check mb-1 text-start">
+              <input class="form-check-input" type="checkbox" name="show_phone"
+                     {% if user.profile.show_phone %}checked{% endif %}>
+              <label class="form-check-label small">Show phone</label>
             </div>
 
-            <!-- Show email -->
-            <div class="form-check mb-3">
-              <input class="form-check-input profile-checkbox"
-                     type="checkbox"
-                     name="show_email"
-                     {% if profile.show_email %}checked{% endif %}
-                     disabled>
-              <label class="form-check-label small">
-                Show email to buyers
-              </label>
+            <div class="form-check mb-3 text-start">
+              <input class="form-check-input" type="checkbox" name="show_email"
+                     {% if user.profile.show_email %}checked{% endif %}>
+              <label class="form-check-label small">Show email</label>
             </div>
 
-            <!-- Save button (hidden until edit) -->
-            <div id="profileActions" class="d-none">
-              <button class="btn btn-primary btn-sm w-100">
-                Save profile
-              </button>
-            </div>
-
+            <button class="btn btn-outline-primary btn-sm w-100">
+              Save profile
+            </button>
           </form>
-
-          <div class="d-grid gap-2 mt-3">
-            <a href="{% url 'create_listing' %}" class="btn btn-success btn-sm">
-              Post a new ad
-            </a>
-          </div>
 
           <hr class="my-3">
 
+          <a href="{% url 'create_listing' %}" class="btn btn-success w-100 mb-2">
+            Post a new ad
+          </a>
+
           <a href="{% url 'delete_account' %}" class="text-danger small">
-            Delete my account permanently
+            Delete account
           </a>
 
         </div>
@@ -159,53 +115,26 @@
           <div class="row g-3 text-center">
             <div class="col-4">
               <div class="fw-bold fs-4">{{ listings|length }}</div>
-              <div class="small text-muted">My listings</div>
+              <div class="text-muted small">Listings</div>
             </div>
             <div class="col-4">
               <div class="fw-bold fs-4">{{ saved_listings|length }}</div>
-              <div class="small text-muted">Saved</div>
+              <div class="text-muted small">Saved</div>
             </div>
             <div class="col-4">
-              <div class="fw-bold fs-4">
-                {{ profile.rating|default:"5.0" }}
-              </div>
-              <div class="small text-muted">Rating</div>
+              <div class="fw-bold fs-4">{{ user.profile.rating|default:"5.0" }}</div>
+              <div class="text-muted small">Rating</div>
             </div>
           </div>
 
         </div>
       </article>
     </div>
-
   </div>
-
-  <!-- SAVED LISTINGS -->
-  <section class="mb-5">
-    <h2 class="h5 mb-2">Saved listings</h2>
-
-    {% if saved_listings %}
-      <div class="cu-grid">
-        {% for item in saved_listings %}
-          <article class="cu-card">
-            <div class="cu-card__body">
-              <h6>
-                <a href="{% url 'listing_detail' item.id %}">
-                  {{ item.title }}
-                </a>
-              </h6>
-              <p class="small text-muted">{{ item.price }} $</p>
-            </div>
-          </article>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-muted small">No saved listings yet.</p>
-    {% endif %}
-  </section>
 
   <!-- MY LISTINGS -->
   <section>
-    <h2 class="h5 mb-2">My listings</h2>
+    <h2 class="h5 mb-3">My listings</h2>
 
     {% if listings %}
       <div class="cu-grid">
@@ -213,18 +142,14 @@
           <article class="cu-card">
             <div class="cu-card__body">
               <h6>
-                <a href="{% url 'listing_detail' item.id %}">
-                  {{ item.title }}
-                </a>
+                <a href="{% url 'listing_detail' item.id %}">{{ item.title }}</a>
               </h6>
-              <p class="small text-muted">{{ item.price }} $</p>
+              <p class="text-muted small">{{ item.price }} $</p>
 
               <div class="d-flex gap-2">
-                <a href="{% url 'edit_listing' item.id %}"
-                   class="btn btn-outline-dark btn-sm">
+                <a href="{% url 'edit_listing' item.id %}" class="btn btn-outline-dark btn-sm">
                   Edit
                 </a>
-
                 <form method="post" action="{% url 'delete_listing' item.id %}">
                   {% csrf_token %}
                   <button class="btn btn-outline-danger btn-sm"
@@ -233,33 +158,14 @@
                   </button>
                 </form>
               </div>
-
             </div>
           </article>
         {% endfor %}
       </div>
     {% else %}
-      <p class="text-muted small">
-        You haven't created any listings yet.
-      </p>
+      <p class="text-muted small">No listings yet.</p>
     {% endif %}
   </section>
 
 </div>
-
-<!-- INLINE EDIT SCRIPT -->
-<script>
-  const toggleBtn = document.getElementById('editProfileToggle');
-  const inputs = document.querySelectorAll('.profile-input');
-  const checkboxes = document.querySelectorAll('.profile-checkbox');
-  const actions = document.getElementById('profileActions');
-
-  toggleBtn.addEventListener('click', function () {
-    inputs.forEach(input => input.removeAttribute('readonly'));
-    checkboxes.forEach(cb => cb.removeAttribute('disabled'));
-    actions.classList.remove('d-none');
-    toggleBtn.classList.add('d-none');
-  });
-</script>
-
 {% endblock %}
